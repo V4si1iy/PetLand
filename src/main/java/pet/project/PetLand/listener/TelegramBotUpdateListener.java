@@ -3,6 +3,7 @@ package pet.project.PetLand.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.util.List;
 public class TelegramBotUpdateListener implements UpdatesListener {
     private static final Logger logger = LoggerFactory.getLogger(TelegramBotUpdateListener.class);
 
-    @Autowired
+    @Autowired()
     private TelegramBot telegramBot;
 
     @PostConstruct
@@ -29,7 +30,8 @@ public class TelegramBotUpdateListener implements UpdatesListener {
             logger.info("Processing update: {}", update);
             Long chatId = update.message().chat().id();
             String message = update.message().text();
-
+            if (message.equals("/start")) {
+                telegramBot.execute(new SendMessage(chatId, "Привет " + update.message().chat().firstName()));}
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
