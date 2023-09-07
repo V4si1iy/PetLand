@@ -13,6 +13,7 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // уникальный id
     private long chatId; // id Telegram чата
+    private long petId; // id взятого питомца
     private String surname; // фамилия
     private String name; // имя
     private String secondName; // отчество
@@ -28,6 +29,9 @@ public class Customer {
 
     public long getChatId() {
         return chatId;
+    }
+    public long getPetId() {
+        return petId;
     }
 
     public String getSurname() {
@@ -58,6 +62,10 @@ public class Customer {
         this.chatId = chatId;
     }
 
+    public void setPetId(long petId) {
+        this.petId = petId;
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
     }
@@ -85,6 +93,7 @@ public class Customer {
         Customer customer = (Customer) o;
         return  id == customer.id &&
                 chatId == customer.chatId &&
+                petId == customer.petId &&
                 Objects.equals(surname, customer.surname) &&
                         Objects.equals(name, customer.name)
                         && Objects.equals(secondName, customer.secondName)
@@ -94,6 +103,6 @@ public class Customer {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chatId, surname, name, secondName, phone, address);
+        return Objects.hash(id, chatId, petId, surname, name, secondName, phone, address);
     }
 }

@@ -29,6 +29,11 @@ public class Pet {
     @JoinColumn(name="id_shelter")
     private Shelter shelter; // ссылка на приют питомца
 
+    public Pet(Long id, Customer customer) {
+        this.id = id;
+        this.customer = customer;
+    }
+
     // ----------------------------------------------
     public void setFilePath(String filePath) {
         this.filePath = filePath;
