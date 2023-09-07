@@ -8,13 +8,13 @@
 <br />
 <div align="center">
   <a href="https://my.sky.pro/">
-    <img src="animal-house.png" alt="Logo" width="80" height="80">
+    <img src="src/images/animal-house.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Телеграм бот приюта для животных</h3>
 
   <p align="center">
-    Командная работа для автоматизации работы приюта через телграм бота
+    Командная работа для автоматизации работы приюта через телеграм-бота
     <br />
     <a href="https://skyengpublic.notion.site/47bcac1b049f4af6b351e2ab5d05afb4"><strong>ТЗ проекта »</strong></a>
     <br />
