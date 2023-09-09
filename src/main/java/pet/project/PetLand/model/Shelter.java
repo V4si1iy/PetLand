@@ -90,4 +90,17 @@ public class Shelter { // Таблица: Приют
         result = 31 * result + Arrays.hashCode(locationMap);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Shelter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
+                ", mediaType='" + mediaType + '\'' +
+                ", locationMap=" + Arrays.toString(locationMap) +
+                '}';
+    }
 }
