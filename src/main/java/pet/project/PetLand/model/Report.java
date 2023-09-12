@@ -1,9 +1,7 @@
 package pet.project.PetLand.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
