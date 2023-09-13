@@ -2,7 +2,7 @@ package pet.project.PetLand.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pet.project.PetLand.Service.ShelterService;
+import pet.project.PetLand.service.ShelterService;
 import pet.project.PetLand.model.Shelter;
 
 import java.util.Collection;

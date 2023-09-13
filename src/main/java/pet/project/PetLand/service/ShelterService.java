@@ -1,7 +1,7 @@
-package pet.project.PetLand.Service;
+package pet.project.PetLand.service;
 
 import org.springframework.stereotype.Service;
-import pet.project.PetLand.Repository.ShelterRepository;
+import pet.project.PetLand.repository.ShelterRepository;
 import pet.project.PetLand.model.Shelter;
 
 import java.util.Collection;
