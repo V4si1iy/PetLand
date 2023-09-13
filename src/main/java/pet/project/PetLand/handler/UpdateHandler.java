@@ -3,10 +3,12 @@ package pet.project.PetLand.handler;
 import com.pengrad.telegrambot.model.Update;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @AllArgsConstructor
+@Service
 public class UpdateHandler {
     private final CallBackQueryHandler callBackQueryHandler;
     private final CommandHandler commandHandler;

@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.User;
+import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.entity.Command;
 
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-
+@Service
 public class CallBackQueryHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum CallBackData)
     private final Map<CallBackData, BiConsumer<User, Message>> commandExecute = new HashMap<>();

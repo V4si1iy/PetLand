@@ -3,6 +3,7 @@ package pet.project.PetLand.handler;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.entity.Command;
 
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-
+@Service
 public class CommandHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum Command)
     private final Map<Command, BiConsumer<User, Chat>> commandExecute = new HashMap<>();
