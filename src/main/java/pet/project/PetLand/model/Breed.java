@@ -34,6 +34,9 @@ public class Breed {
     public int getChildAge() {
         return childAge;
     }
+    public long getId() {
+        return id;
+    }
 
     public void setBreed(String breed) {
         this.breed = breed;

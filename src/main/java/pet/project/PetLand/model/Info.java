@@ -20,6 +20,10 @@ public class Info { // Таблица: Информация (Info) - докум�
         return area;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getInstructions() {
         return instructions;
     }
