@@ -25,7 +25,7 @@ public class UpdateHandler {
             callBackQueryHandler.handler(update.callbackQuery());
         } else if (!update.message().text().isEmpty() && update.message().text().startsWith("/")) // поиск команд через "/"
         {
-            commandHandler.handler(update.message().from(), update.message().chat(), update.message().text());
+            commandHandler.handler(update.message().from(), update.message());
         }
     }
 }
