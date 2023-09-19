@@ -32,8 +32,8 @@ public class InLineKeyboard {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
                 new InlineKeyboardButton("Техника безопасности").callbackData(CallBackData.RECOMMENDATIONS_SHELTER.toString()),
-                new InlineKeyboardButton("Рекомендации по собаке").callbackData(CallBackData.RECOMMENDATIONS_CAT.toString()),
-                new InlineKeyboardButton("Рекомендации по кошке").callbackData(CallBackData.RECOMMENDATIONS_DOG.toString()),
+                new InlineKeyboardButton("Рекомендации по собаке").callbackData(CallBackData.RECOMMENDATIONS_DOG.toString()),
+                new InlineKeyboardButton("Рекомендации по кошке").callbackData(CallBackData.RECOMMENDATIONS_CAT.toString()),
 
         };
         inlineKeyboardMarkup.addRow(buttons[0]);
