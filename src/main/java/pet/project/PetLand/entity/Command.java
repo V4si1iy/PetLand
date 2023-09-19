@@ -10,5 +10,4 @@ public enum Command // Перечисление команд в боте
     private final String name;
 
     private final String description;
-
 }
