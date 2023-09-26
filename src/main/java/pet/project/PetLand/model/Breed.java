@@ -34,6 +34,15 @@ public class Breed {
     public int getChildAge() {
         return childAge;
     }
+
+    public Breed(long id, String breed, String recommendationsChild, String recommendationsAdult, int childAge) {
+        this.id = id;
+        this.breed = breed;
+        this.recommendationsChild = recommendationsChild;
+        this.recommendationsAdult = recommendationsAdult;
+        this.childAge = childAge;
+    }
+
     public long getId() {
         return id;
     }
