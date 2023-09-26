@@ -26,6 +26,10 @@ public class PetService implements PetServiceImpl {
         return petRepository.save(pet);
 
     }
+    public Pet findByName(String name)
+    {
+        return petRepository.findByName(name);
+    }
 
     @Override
     public Pet read(Long id) {

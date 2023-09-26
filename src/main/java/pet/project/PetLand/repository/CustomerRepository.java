@@ -6,4 +6,5 @@ import pet.project.PetLand.model.Customer;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    Customer findByChatId(Long chatId);
 }

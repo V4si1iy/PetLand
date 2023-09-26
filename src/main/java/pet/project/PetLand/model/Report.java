@@ -22,4 +22,13 @@ public class Report { // Таблица: Отчет (Report) (о питомце)
     @JoinColumn(name = "id_pet")
     private Pet pet; // id питомца (из таблицы Pet) (one-to-one)
 
+    public Report(String petReport, LocalDateTime date, Pet pet) {
+        this.petReport = petReport;
+        this.date = date;
+        this.pet = pet;
+    }
+
+    public Report() {
+
+    }
 }

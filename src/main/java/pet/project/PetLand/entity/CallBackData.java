@@ -5,7 +5,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum CallBackData // перечисление кнопок в боте
 {
-    ; // при появлении первой кнопки убрать комментарий и точку с запятой (сейчас это заглушка)
+    SHELTER_INFORMATION("инофрмация по приюту", "дает полную информацию по выбранному приюту"),
+    HOW_TAKE_PET("", ""),
+    REPORT("", ""),
+    VOLUNTEER("", ""),
+    RECOMMENDATIONS("", ""),
+    RECOMMENDATIONS_SHELTER("",""),
+    RECOMMENDATIONS_DOG("",""),
+    RECOMMENDATIONS_CAT("","");
+
 
     private final String name;
 
@@ -16,14 +24,13 @@ public enum CallBackData // перечисление кнопок в боте
      *
      * @param data данные кнопки нажатой в боте
      * @return callBackData - возвращает найденную кнопку, если ее нет - null
-     *
      */
     public static CallBackData parse(String data) {
         for (CallBackData callBackData : CallBackData.values()) {
-            if (callBackData.toString() == data) {
+            if (callBackData.toString().equals(data)) {
                 return callBackData;
             }
-            break;
+
         }
         return null;
     }

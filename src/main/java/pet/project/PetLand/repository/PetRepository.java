@@ -23,4 +23,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     List<Pet> findPetsByCustomerNotNull();
 
+
+    Pet findByName(String name);
+
 }

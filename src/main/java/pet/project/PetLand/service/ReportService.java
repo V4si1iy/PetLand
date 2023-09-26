@@ -1,8 +1,10 @@
 package pet.project.PetLand.service;
 
+import com.pengrad.telegrambot.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pet.project.PetLand.handler.CallBackQueryHandler;
 import pet.project.PetLand.model.Customer;
 import pet.project.PetLand.model.Pet;
 import pet.project.PetLand.model.Report;
@@ -15,17 +17,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class ReportService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
+    private final Pattern patternReport = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\r\\n)(Отчет:)(\\s)([\\W+]+)");
+
 
     private final ReportRepository reportRepository;
     private final ReportPhotoRepository reportPhotoRepository;
     private final PetService petService;
 
     public ReportService(ReportRepository reportRepository, ReportPhotoRepository reportPhotoRepository, PetService petService) {
-
         this.reportRepository = reportRepository;
         this.reportPhotoRepository = reportPhotoRepository;
         this.petService = petService;
@@ -51,6 +56,17 @@ public class ReportService {
     public Report createReport(Report report) {
         return reportRepository.save(report);
     }
+
+    public void createReport(Message message) {
+        Matcher matcher = patternReport.matcher(message.text());
+        if (matcher.matches()) {
+            String name = matcher.group(1);
+            String report = matcher.group(7);
+            Pet pet = petService.findByName(name);
+            createReport(new Report(report, LocalDateTime.now(), pet));
+        }
+    }
+
 
     public Report updateReport(Report report) {
         return reportRepository.save(report);
