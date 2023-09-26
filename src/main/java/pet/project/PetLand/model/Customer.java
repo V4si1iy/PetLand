@@ -86,6 +86,12 @@ public class Customer {
         this.address = address;
     }
 
+    public Customer(long chatId, String surname, String name) {
+        this.chatId = chatId;
+        this.surname = surname;
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

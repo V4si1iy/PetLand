@@ -1,5 +1,7 @@
 package pet.project.PetLand.service;
 
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.model.Customer;
 import pet.project.PetLand.repository.CustomerRepository;
@@ -7,12 +9,16 @@ import pet.project.PetLand.repository.CustomerRepository;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private TelegramSenderService telegramSenderService;
+    private boolean flag = false;
+    private final Pattern patternCustomer = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\r\\n)(Фамилия:)(\\s)([\\W+]+)");
 
     public CustomerService(CustomerRepository customerRepository) {
 
@@ -46,15 +52,30 @@ public class CustomerService {
 
         return customerRepository.findByChatId(id);
     }
-    public Customer customerIsExist(Long chatId) {
+    public void customerIsExist(Long chatId) {
         Customer customer = findByChatId(chatId);
 
         if (!Objects.isNull(customer)) {
-            return customer;
+            telegramSenderService.send(chatId, "Здравствуйте! " + customer.getName() + " Давно Вас не видели)");
         } else {
-            telegramSenderService.send(chatId, "Введите свои данные");
+            telegramSenderService.send(chatId, "Здраствуйте! Вы новый пользователь. Введите свои данные по шаблону: \n" + "Имя: <Имя> \n" + "Фамилия: <Фамилия>");
+            flag = true;
+        }
+    }
+    public boolean flagCustomer() {
+        return flag;
+    }
+    public void updateFlagCustomer() {
+        this.flag = false;
+    }
+    public void createCustomerStart(Chat chat, Message message) {
+
+        Matcher matcher = patternCustomer.matcher(message.text());
+        if (matcher.matches()) {
+            String name = matcher.group(3);
+            String surname = matcher.group(7);
+            create(new Customer(chat.id(), surname, name));
         }
 
     }
-
 }

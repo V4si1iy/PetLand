@@ -1,15 +1,10 @@
 package pet.project.PetLand.handler;
 
-import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.DeleteMessage;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.SendMessage;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.entity.Command;
+import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.TelegramSenderService;
 
 import java.util.HashMap;
@@ -20,12 +15,11 @@ import java.util.function.BiConsumer;
 public class CommandHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum Command)
     private final Map<Command, BiConsumer<User, Message>> commandExecute = new HashMap<>();
-
-    public CommandHandler() {
-        commandExecute.put(Command.START, this::handleStart);// Добавление команд в хранилище (новые делать по примеру)
-        commandExecute.put(Command.START, this::handleStart);
-    public CommandHandler(TelegramSenderService telegramSenderService) {
+    private final TelegramSenderService telegramSenderService;
+    private final CustomerService customerService;
+    public CommandHandler(TelegramSenderService telegramSenderService, CustomerService customerService) {
         this.telegramSenderService = telegramSenderService;
+        this.customerService = customerService;
 
         commandExecute.put(Command.START, this::handleStart); // Добавление команд в хранилище (новые делать по примеру)
     }
@@ -48,6 +42,8 @@ public class CommandHandler {
     }
 
     private void handleStart(User user, Message message) {
+        customerService.customerIsExist(message.chat().id());
+
         // Написать старт в этом блоке расширяясь в сервисы
     }
 
