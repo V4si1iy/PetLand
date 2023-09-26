@@ -37,11 +37,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
             Long chatId = update.message().chat().id();
             String message = update.message().text();
             updateHandler.handler(update);
-            if ("/start".equals(message)) // нужно перенести этот блок в обработчика и сделать проверки на нового пользователя
-            {
-                telegramSenderService.send(chatId, "Привет! Вы к нам за верным другом? Тогда вперед!");
 
-            }
         });
 
         return UpdatesListener.CONFIRMED_UPDATES_ALL;

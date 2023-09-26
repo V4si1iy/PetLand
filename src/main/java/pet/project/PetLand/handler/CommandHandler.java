@@ -2,10 +2,9 @@ package pet.project.PetLand.handler;
 
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.entity.Command;
+import pet.project.PetLand.service.TelegramSenderService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +14,11 @@ import java.util.function.BiConsumer;
 public class CommandHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum Command)
     private final Map<Command, BiConsumer<User, Chat>> commandExecute = new HashMap<>();
+    private final TelegramSenderService telegramSenderService;
 
-    public CommandHandler() {
+    public CommandHandler(TelegramSenderService telegramSenderService) {
+        this.telegramSenderService = telegramSenderService;
+
         commandExecute.put(Command.START, this::handleStart); // Добавление команд в хранилище (новые делать по примеру)
     }
 
@@ -38,7 +40,9 @@ public class CommandHandler {
     }
 
     private void handleStart(User user, Chat chat) {
-        // Написать старт в этом блоке расширяясь в сервисы
+        telegramSenderService.send(chat.id(), "Привет! Вы к нам за верным другом? Тогда вперед!");// Написать старт в этом блоке расширяясь в сервисы
     }
+
+
 
 }
