@@ -22,7 +22,6 @@ public class CommandHandler {
 
     public CommandHandler() {
         commandExecute.put(Command.START, this::handleStart);// Добавление команд в хранилище (новые делать по примеру)
-        commandExecute.put(Command.START, this::handleStart);
     }
 
     /**

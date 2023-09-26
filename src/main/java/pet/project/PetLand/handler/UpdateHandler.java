@@ -32,7 +32,7 @@ public class UpdateHandler {
             if (callBackQueryHandler.flagReport()) {
                 reportService.createReport(update.callbackQuery().message());
                 callBackQueryHandler.updateFlagReport();
-                callBackQueryHandler.sendStartMenu(update.callbackQuery());
+                callBackQueryHandler.sendStartMenu(update.callbackQuery().message().chat().id());
             }
         }
     }

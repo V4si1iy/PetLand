@@ -60,7 +60,7 @@ public class ReportService {
     public void createReport(Message message) {
         Matcher matcher = patternReport.matcher(message.text());
         if (matcher.matches()) {
-            String name = matcher.group(1);
+            String name = matcher.group(3);
             String report = matcher.group(7);
             Pet pet = petService.findByName(name);
             createReport(new Report(report, LocalDateTime.now(), pet));

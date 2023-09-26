@@ -68,49 +68,56 @@ public class CallBackQueryHandler {
     }
 
     private void handleInformationShelter(User user, CallbackQuery callbackQuery) {
-        EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь должна быть информация");
+        EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Здесь должна быть информация");
         telegramBot.execute(editMessage);
-        sendStartMenu(callbackQuery);
+        sendStartMenu(callbackQuery.message().chat().id());
     }
 
     private void handleRecommendations(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Какая рекомендация вам нужна?")
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Какая рекомендация вам нужна?")
                 .replyMarkup(inLineKeyboard.recommendationsInLineKeyboard());
         telegramBot.execute(messageText);
     }
 
     private void handleRecommendationShelter(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь должна быть техника безопасни в приюте и рекомендации по приюту");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Здесь должна быть техника безопасни в приюте и рекомендации по приюту");
         telegramBot.execute(messageText);
-        sendStartMenu(callbackQuery);
+        sendStartMenu(callbackQuery.message().chat().id());
 
     }
 
     private void handleRecommendationDog(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь рекомендации по ухаживанию собаки и щенка");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Здесь рекомендации по ухаживанию собаки и щенка");
         telegramBot.execute(messageText);
-        sendStartMenu(callbackQuery);
+        sendStartMenu(callbackQuery.message().chat().id());
 
     }
 
     private void handleRecommendationCat(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь рекомендации по ухаживанию кошки и котенка");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Здесь рекомендации по ухаживанию кошки и котенка");
         telegramBot.execute(messageText);
-        sendStartMenu(callbackQuery);
+        sendStartMenu(callbackQuery.message().chat().id());
 
     }
 
     private void handleHowTakePet(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь должна быть информация как взять питомца");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Здесь должна быть информация как взять питомца");
         telegramBot.execute(messageText);
-        sendStartMenu(callbackQuery);
+        sendStartMenu(callbackQuery.message().chat().id());
 
     }
 
     private void handleVolunteer(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Спасибо что оставили заявку на звонок,ближайшее время с вами свяжется наш волонтер");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Спасибо что оставили заявку на звонок,ближайшее время с вами свяжется наш волонтер");
         telegramBot.execute(messageText);
-        sendStartMenu(callbackQuery);
+        sendStartMenu(callbackQuery.message().chat().id());
 
     }
 
@@ -125,8 +132,8 @@ public class CallBackQueryHandler {
 
     }
 
-    public void sendStartMenu(CallbackQuery callbackQuery) {
-        SendMessage newMessage = new SendMessage(callbackQuery.message().chat().id(), "Здесь должен будет написан выбранный приют").replyMarkup(inLineKeyboard.shelterInLineKeyboard());
+    public void sendStartMenu(Long chatId) {
+        SendMessage newMessage = new SendMessage(chatId, "Здесь должен будет написан выбранный приют").replyMarkup(inLineKeyboard.shelterInLineKeyboard());
         telegramBot.execute(newMessage);
     }
 
