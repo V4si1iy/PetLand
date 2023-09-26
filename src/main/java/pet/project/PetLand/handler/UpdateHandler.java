@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pet.project.PetLand.service.ReportService;
 
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
 public class UpdateHandler {
     private final CallBackQueryHandler callBackQueryHandler;
     private final CommandHandler commandHandler;
+    private final ReportService reportService;
 
     /**
      * Метод для обработки всех данных полученных от бота (<b> Главный метод иерархии обработчиков </b>)
@@ -26,6 +28,12 @@ public class UpdateHandler {
         } else if (!update.message().text().isEmpty() && update.message().text().startsWith("/")) // поиск команд через "/"
         {
             commandHandler.handler(update.message().from(), update.message());
+        } else if (!update.message().text().isEmpty()) {
+            if (callBackQueryHandler.flagReport()) {
+                reportService.createReport(update.callbackQuery().message());
+                callBackQueryHandler.updateFlagReport();
+                callBackQueryHandler.sendStartMenu(update.callbackQuery());
+            }
         }
     }
 }

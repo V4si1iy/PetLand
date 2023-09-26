@@ -25,6 +25,7 @@ public class CallBackQueryHandler {
     private final Map<CallBackData, BiConsumer<User, CallbackQuery>> commandExecute = new HashMap<>();
     InLineKeyboard inLineKeyboard;
     TelegramBot telegramBot;
+    private boolean flag = false;
 
     public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot) {
         // пример добавления команды: commandExecute.put(CallBackData.<Button>, this::handle<Button>);
@@ -98,28 +99,43 @@ public class CallBackQueryHandler {
         sendStartMenu(callbackQuery);
 
     }
+
     private void handleHowTakePet(User user, CallbackQuery callbackQuery) {
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь должна быть информация как взять питомца");
         telegramBot.execute(messageText);
         sendStartMenu(callbackQuery);
 
     }
+
     private void handleVolunteer(User user, CallbackQuery callbackQuery) {
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Спасибо что оставили заявку на звонок,ближайшее время с вами свяжется наш волонтер");
         telegramBot.execute(messageText);
         sendStartMenu(callbackQuery);
 
     }
+
     private void handleReport(User user, CallbackQuery callbackQuery) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Напишите пожалуйста Имя питомца по которому хотите написать отчет \n" +
-                "для отмены напишите /cancel");
+        this.flag = true;
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Напишите пожалуйста отчет по образцу: \n" +
+                "Имя: <Имя животного> \n"
+                + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n"
+                + "Для отмены напишите /cancel");
         telegramBot.execute(messageText);
 
     }
-    private void sendStartMenu(CallbackQuery callbackQuery)
-    {
+
+    public void sendStartMenu(CallbackQuery callbackQuery) {
         SendMessage newMessage = new SendMessage(callbackQuery.message().chat().id(), "Здесь должен будет написан выбранный приют").replyMarkup(inLineKeyboard.shelterInLineKeyboard());
         telegramBot.execute(newMessage);
+    }
+
+    public boolean flagReport() {
+        return flag;
+    }
+
+    public void updateFlagReport() {
+        flag = false;
     }
 
 }

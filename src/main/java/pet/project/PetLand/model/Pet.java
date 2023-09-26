@@ -35,6 +35,10 @@ public class Pet {
         this.customer = customer;
     }
 
+    public Pet() {
+
+    }
+
     // ----------------------------------------------
     public void setFilePath(String filePath) {
         this.filePath = filePath;
