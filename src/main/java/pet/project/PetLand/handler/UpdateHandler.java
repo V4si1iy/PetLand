@@ -14,6 +14,7 @@ public class UpdateHandler {
     private final CallBackQueryHandler callBackQueryHandler;
     private final CommandHandler commandHandler;
     private final ReportService reportService;
+    private final CustomerService customerService;
 
     /**
      * Метод для обработки всех данных полученных от бота (<b> Главный метод иерархии обработчиков </b>)
@@ -32,6 +33,11 @@ public class UpdateHandler {
             if (callBackQueryHandler.flagReport()) {
                 reportService.createReport(update.callbackQuery().message());
                 callBackQueryHandler.updateFlagReport();
+                callBackQueryHandler.sendStartMenu(update.callbackQuery());
+            } else if (customerService.flagCustomer()) {
+                customerService.createCustomerStart(update.message().chat(), update.message());
+                customerService.updateFlagCustomer();
+                callBackQueryHandler.sendStartMenu(update.callbackQuery());
                 callBackQueryHandler.sendStartMenu(update.callbackQuery().message().chat().id());
             }
         }
