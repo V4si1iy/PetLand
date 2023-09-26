@@ -3,15 +3,18 @@ package pet.project.PetLand.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.handler.UpdateHandler;
+import pet.project.PetLand.service.InLineKeyboard;
 import pet.project.PetLand.service.TelegramSenderService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +25,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final TelegramSenderService telegramSenderService;
     private final UpdateHandler updateHandler;
+    InLineKeyboard inLineKeyboard;
 
 
     @PostConstruct
@@ -34,8 +38,8 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
-            Long chatId = update.message().chat().id();
-            String message = update.message().text();
+            if(!Objects.isNull(update.message()))
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "test1").replyMarkup(inLineKeyboard.shelterInLineKeyboard()));
             updateHandler.handler(update);
 
         });
