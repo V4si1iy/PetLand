@@ -1,11 +1,13 @@
 package pet.project.PetLand.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
 @Entity
 public class Shelter { // Таблица: Приют
     @Id
@@ -13,81 +15,101 @@ public class Shelter { // Таблица: Приют
     private long id; // уникальный id
     private String name; // название приюта питомцев
     private String address; // адрес
+    private String locationMap; // ссылка на схему проезда
+    private String description; // описание приюта
+    private String rules; // правила приюта
 
-    // Описание файла со схемой проезда
-    private String filePath;
-    private long fileSize;
-    private String mediaType;
-    private byte[] locationMap; // схема проезда
+    public Shelter(long id, String name, String address, String locationMap, String description, String rules, Set<Volunteer> volunteers) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.locationMap = locationMap;
+        this.description = description;
+        this.rules = rules;
+        this.volunteers = volunteers;
+    }
 
     public long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public byte[] getLocationMap() {
-        return locationMap;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public String getLocationMap() {
+        return locationMap;
     }
 
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
-    }
-
-    public void setLocationMap(byte[] locationMap) {
+    public void setLocationMap(String locationMap) {
         this.locationMap = locationMap;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
+    }
+
+    public Set<Volunteer> getVolunteers() {
+        return volunteers;
+    }
+
+    public void setVolunteers(Set<Volunteer> volunteers) {
+        this.volunteers = volunteers;
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "volunteer_shelter",
+            joinColumns = @JoinColumn(name = "shelter_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "volunteer_id", referencedColumnName = "id"))
+    @JsonIgnore
+    private Set<Volunteer> volunteers = new HashSet<>();
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Shelter shelter = (Shelter) o;
-        return id == shelter.id && fileSize == shelter.fileSize && Objects.equals(name, shelter.name) && Objects.equals(address, shelter.address) && Objects.equals(filePath, shelter.filePath) && Objects.equals(mediaType, shelter.mediaType) && Arrays.equals(locationMap, shelter.locationMap);
+
+        if (id != shelter.id) return false;
+        if (name != null ? !name.equals(shelter.name) : shelter.name != null) return false;
+        if (address != null ? !address.equals(shelter.address) : shelter.address != null) return false;
+        return locationMap != null ? locationMap.equals(shelter.locationMap) : shelter.locationMap == null;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, name, address, filePath, fileSize, mediaType);
-        result = 31 * result + Arrays.hashCode(locationMap);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (locationMap != null ? locationMap.hashCode() : 0);
         return result;
     }
 
@@ -96,11 +118,6 @@ public class Shelter { // Таблица: Приют
         return "Shelter{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", fileSize=" + fileSize +
-                ", mediaType='" + mediaType + '\'' +
-                ", locationMap=" + Arrays.toString(locationMap) +
                 '}';
     }
 }
