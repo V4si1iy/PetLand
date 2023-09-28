@@ -38,8 +38,6 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
-            if(!Objects.isNull(update.message()))
-            telegramBot.execute(new SendMessage(update.message().chat().id(), "test1").replyMarkup(inLineKeyboard.shelterInLineKeyboard()));
             updateHandler.handler(update);
 
         });

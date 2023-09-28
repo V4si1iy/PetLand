@@ -13,5 +13,6 @@ public interface ShelterRepository extends JpaRepository<Shelter, Long> {
     Shelter save(Shelter shelter);
 
     void deleteById(Long id);
+    Shelter findByName(String name);
 
 }

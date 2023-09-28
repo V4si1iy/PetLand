@@ -3,6 +3,7 @@ package pet.project.PetLand.service;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Service;
+import pet.project.PetLand.handler.CallBackQueryHandler;
 import pet.project.PetLand.model.Customer;
 import pet.project.PetLand.repository.CustomerRepository;
 
@@ -17,12 +18,15 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private TelegramSenderService telegramSenderService;
+    private final CallBackQueryHandler callBackQueryHandler;
     private boolean flag = false;
-    private final Pattern patternCustomer = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\r\\n)(Фамилия:)(\\s)([\\W+]+)");
+    private final Pattern patternCustomer = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\n)(Фамилия:)(\\s)([\\W+]+)");
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, TelegramSenderService telegramSenderService, CallBackQueryHandler callBackQueryHandler) {
 
         this.customerRepository = customerRepository;
+        this.telegramSenderService = telegramSenderService;
+        this.callBackQueryHandler = callBackQueryHandler;
     }
 
     public Collection<Customer> findAll() {
@@ -52,13 +56,20 @@ public class CustomerService {
 
         return customerRepository.findByChatId(id);
     }
-    public void customerIsExist(Long chatId) {
+    public boolean customerIsExist(Long chatId)
+    {
         Customer customer = findByChatId(chatId);
-
-        if (!Objects.isNull(customer)) {
-            telegramSenderService.send(chatId, "Здравствуйте! " + customer.getName() + " Давно Вас не видели)");
+        if (!Objects.isNull(customer)){
+            return true;
+        }
+        else return false;
+    }
+    public void registerCustomer(Long chatId) {
+        if (customerIsExist(chatId)) {
+            telegramSenderService.send(chatId, "Здравствуйте! " + findByChatId(chatId).getName() + " Давно Вас не видели)");
+            callBackQueryHandler.startMenu(chatId);
         } else {
-            telegramSenderService.send(chatId, "Здраствуйте! Вы новый пользователь. Введите свои данные по шаблону: \n" + "Имя: <Имя> \n" + "Фамилия: <Фамилия>");
+            telegramSenderService.send(chatId, "Здраствуйте! Вы новый пользователь. Введите свои данные по шаблону: \n" + "Имя: <Имя> \n" + "Фамилия: <Фамилия> \n" + "Отменить действие /cancel");
             flag = true;
         }
     }

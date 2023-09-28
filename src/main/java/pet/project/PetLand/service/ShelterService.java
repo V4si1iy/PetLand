@@ -16,6 +16,10 @@ public class ShelterService {
     public Collection<Shelter> findAll() {
         return shelterRepository.findAll();
     }
+    public Shelter findByName(String name)
+    {
+        return shelterRepository.findByName(name);
+    }
 
     public Shelter findById(Long id) {
         return shelterRepository.findById(id).orElse(null);

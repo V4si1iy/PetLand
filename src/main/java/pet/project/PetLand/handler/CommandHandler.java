@@ -1,6 +1,5 @@
 package pet.project.PetLand.handler;
 
-import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.User;
 import org.springframework.stereotype.Service;
@@ -16,13 +15,16 @@ import java.util.function.BiConsumer;
 public class CommandHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum Command)
     private final Map<Command, BiConsumer<User, Message>> commandExecute = new HashMap<>();
-    private final TelegramSenderService telegramSenderService;
     private final CustomerService customerService;
-    public CommandHandler(TelegramSenderService telegramSenderService, CustomerService customerService) {
-        this.telegramSenderService = telegramSenderService;
+    private final CallBackQueryHandler callBackQueryHandler;
+    private final TelegramSenderService telegramSenderService;
+    public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService) {
         this.customerService = customerService;
+        this.callBackQueryHandler = callBackQueryHandler;
+        this.telegramSenderService = telegramSenderService;
 
         commandExecute.put(Command.START, this::handleStart); // Добавление команд в хранилище (новые делать по примеру)
+        commandExecute.put(Command.CANCEL, this::handleCancel);
     }
 
     /**
@@ -35,8 +37,8 @@ public class CommandHandler {
     public void handler(User user, Message message) {
         Command[] commands = Command.values();
         for (Command command : commands) {
-            if (("/" + command.name()).equals(message.text())) {
-                commandExecute.get(message.text()).accept(user, message);
+            if (("/" + command.name().toLowerCase()).equals(message.text())) {
+                commandExecute.get(command).accept(user, message);
                 break;
             }
         }
@@ -49,10 +51,16 @@ public class CommandHandler {
     }
 
     private void handleCancel(User user, Message message) {
-//        DeleteMessage messageText = new DeleteMessage(chat.id(),message.messageId())
-//        telegramBot.execute(messageText);
-//        SendMessage newMessage = new SendMessage(callbackQuery.message().chat().id(), "test1").replyMarkup(inLineKeyboard.shelterInLineKeyboard());
-//        telegramBot.execute(newMessage);
+        if(callBackQueryHandler.flagReport() || customerService.flagCustomer())
+        {
+            callBackQueryHandler.updateFlagReport();
+            customerService.updateFlagCustomer();
+        }
+        else {
+            telegramSenderService.send(user.id(), "В данный момент вы ничего не вводите");
+
+        }
+
     }
 }
 

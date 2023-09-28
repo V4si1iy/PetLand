@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.ReportService;
 
 import java.util.Objects;
@@ -29,16 +30,19 @@ public class UpdateHandler {
         } else if (!update.message().text().isEmpty() && update.message().text().startsWith("/")) // поиск команд через "/"
         {
             commandHandler.handler(update.message().from(), update.message());
-        } else if (!update.message().text().isEmpty()) {
-            if (callBackQueryHandler.flagReport()) {
-                reportService.createReport(update.callbackQuery().message());
+        } else if (!update.message().text().isEmpty())// проверка на ввод пользователя
+        {
+            if (callBackQueryHandler.flagReport()) // если стоит флаг то получаем ручной ввод Отчета
+            {
+                reportService.createReport(update.message());
                 callBackQueryHandler.updateFlagReport();
-                callBackQueryHandler.sendStartMenu(update.callbackQuery());
-            } else if (customerService.flagCustomer()) {
+                callBackQueryHandler.startMenu(update.message().chat().id());
+
+            } else if (customerService.flagCustomer()) // если стоит флаг то получаем ручной ввод Анкеты
+            {
                 customerService.createCustomerStart(update.message().chat(), update.message());
                 customerService.updateFlagCustomer();
-                callBackQueryHandler.sendStartMenu(update.callbackQuery());
-                callBackQueryHandler.sendStartMenu(update.callbackQuery().message().chat().id());
+                callBackQueryHandler.startMenu(update.message().chat().id());
             }
         }
     }

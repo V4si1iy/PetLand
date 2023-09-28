@@ -1,16 +1,21 @@
 package pet.project.PetLand.service;
 
 
-import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.CallBackData;
+import pet.project.PetLand.model.Shelter;
 
 @Service
 public class InLineKeyboard {
-    InlineKeyboardMarkup inlineKeyboardMarkup;
+    private InlineKeyboardMarkup inlineKeyboardMarkup;
+    private final ShelterService shelterService;
+
+    public InLineKeyboard(ShelterService shelterService) {
+        this.shelterService = shelterService;
+
+    }
 
     public InlineKeyboardMarkup shelterInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -27,8 +32,8 @@ public class InLineKeyboard {
         inlineKeyboardMarkup.addRow(buttons[4]);
         return inlineKeyboardMarkup;
     }
-    public InlineKeyboardMarkup recommendationsInLineKeyboard()
-    {
+
+    public InlineKeyboardMarkup recommendationsInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
                 new InlineKeyboardButton("Техника безопасности").callbackData(CallBackData.RECOMMENDATIONS_SHELTER.toString()),
@@ -40,5 +45,19 @@ public class InLineKeyboard {
         inlineKeyboardMarkup.addRow(buttons[1]);
         inlineKeyboardMarkup.addRow(buttons[2]);
         return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup allSheltersInLineKeyboard() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        shelterService.findAll().forEach(shelter ->
+                {
+                   inlineKeyboardMarkup = inlineKeyboardBuilder(inlineKeyboardMarkup,shelter);
+                }
+        );
+        return inlineKeyboardMarkup;
+    }
+
+    private InlineKeyboardMarkup inlineKeyboardBuilder(InlineKeyboardMarkup inlineKeyboardMarkup, Shelter shelter) {
+        return inlineKeyboardMarkup.addRow(new InlineKeyboardButton(shelter.getName()).callbackData(shelter.getName()));
     }
 }

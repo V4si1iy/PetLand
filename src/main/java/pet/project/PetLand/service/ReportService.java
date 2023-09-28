@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @Service
 public class ReportService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
-    private final Pattern patternReport = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\r\\n)(Отчет:)(\\s)([\\W+]+)");
+    private final Pattern patternReport = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\n)(Отчет:)(\\s)([\\W+]+)");
 
 
     private final ReportRepository reportRepository;
