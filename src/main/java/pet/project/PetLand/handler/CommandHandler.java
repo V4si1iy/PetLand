@@ -73,7 +73,12 @@ public class CommandHandler {
 
     private void handelMenu(User user, Message message) {
         LOGGER.info("Was invoked method -> /menu");
-        callBackQueryHandler.startMenu(user.id());
+       if( customerService.customerIsExist(user.id())) {
+           callBackQueryHandler.startMenu(user.id());
+       }
+       else{
+           telegramSenderService.send(user.id(), "Вы не зарегестрировались, для старта напишите: /start");
+       }
     }
 }
 
