@@ -13,7 +13,20 @@ public class ReportPhoto {
     private String mediaType;
     private byte[] photo;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_report")
     private Report report;
+
+    public ReportPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public ReportPhoto() {
+
+    }
+
+    public void addReportToPhoto(Report report)
+    {
+        this.report=report;
+    }
 }

@@ -29,6 +29,10 @@ public class Shelter { // Таблица: Приют
         this.volunteers = volunteers;
     }
 
+    public Shelter() {
+
+    }
+
     public long getId() {
         return id;
     }

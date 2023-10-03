@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pet.project.PetLand.handler.CallBackQueryHandler;
 import pet.project.PetLand.model.Customer;
 import pet.project.PetLand.model.Pet;
@@ -12,6 +13,16 @@ import pet.project.PetLand.model.ReportPhoto;
 import pet.project.PetLand.repository.ReportPhotoRepository;
 import pet.project.PetLand.repository.ReportRepository;
 
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,6 +35,7 @@ import java.util.regex.Pattern;
 public class ReportService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
     private final Pattern patternReport = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\n)(Отчет:)(\\s)([\\W+]+)");
+    private final Pattern patternReportForm = Pattern.compile("(Name:)(\\W+)(\\n)(First:)(\\W+)(\\n)(Second:)(\\W+)(\\n)(Third:)(\\W+)(\\n)(Link:)(.+)");
 
 
     private final ReportRepository reportRepository;
@@ -57,6 +69,15 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
+    public ReportPhoto createReportPhoto(ReportPhoto report) {
+        return reportPhotoRepository.save(report);
+    }
+
+    /**
+     * <p>Метод с помощью регулярных выражений получает строку, которая сформированна телеграм ботом</p>
+     * Pattern: <b>(Имя:)(\s)([\W+]+)(\n)(Отчет:)(\s)([\W+]+)</b>
+     * @param message - сообщение полученное от пользователя
+     */
     public void createReport(Message message) {
         Matcher matcher = patternReport.matcher(message.text());
         if (matcher.matches()) {
@@ -67,6 +88,34 @@ public class ReportService {
         }
     }
 
+    /**
+     * Метод с помощью регулярных выражений получает строку, которая сформированна яндекс формой
+     * form:<p>Name: Name of pet</p><p>First:First paragraph</p><p>Second:Second paragraph</p><p>Third:Third paragraph</p><p>Link:Link on photo by Yandex</p>
+     * Pattern: <b>(Name:)(\W+)(\n)(First:)(\W+)(\n)(Second:)(\W+)(\n)(Third:)(\W+)(\n)(Link:)(.+)</b>
+     * <a href="https://forms.yandex.ru/u/650ab773068ff033bb7a0a2f/">YandexForm</a>
+     * @param form особый вид формы сделанный Vasiliy
+     * @throws IOException ошибка обработки фото через url
+     */
+    public void createReportYandexForm(String form) throws IOException {
+        Matcher matcher = patternReportForm.matcher(form);
+        if (matcher.matches()) {
+            String name = matcher.group(2);
+            String first = matcher.group(5);
+            String second = matcher.group(8);
+            String third = matcher.group(11);
+
+            Pet pet = petService.findByName(name);
+            Report report = new Report(first + " " + second + " " + third, LocalDateTime.now(), pet);
+            createReport(report);
+
+//            Реализация получения фото через яндекс форму(пока не прикручена не получается адекватно скачать фотку из инета по ссылке)
+//             URL url = new URL(matcher.group(14));
+//             RenderedImage link = ImageIO.read(url);
+//             ReportPhoto reportPhoto = new ReportPhoto(((DataBufferByte) link.getData().getDataBuffer()).getData());
+//              reportPhoto.addReportPhoto(report);
+//              createReportToPhoto(reportPhoto);
+        }
+    }
 
     public Report updateReport(Report report) {
         return reportRepository.save(report);

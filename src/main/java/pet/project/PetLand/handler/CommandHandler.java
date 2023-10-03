@@ -18,6 +18,7 @@ public class CommandHandler {
     private final CustomerService customerService;
     private final CallBackQueryHandler callBackQueryHandler;
     private final TelegramSenderService telegramSenderService;
+
     public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService) {
         this.customerService = customerService;
         this.callBackQueryHandler = callBackQueryHandler;
@@ -25,6 +26,7 @@ public class CommandHandler {
 
         commandExecute.put(Command.START, this::handleStart); // Добавление команд в хранилище (новые делать по примеру)
         commandExecute.put(Command.CANCEL, this::handleCancel);
+        commandExecute.put(Command.MENU,this::handelMenu);
     }
 
     /**
@@ -45,22 +47,27 @@ public class CommandHandler {
     }
 
     private void handleStart(User user, Message message) {
-        customerService.customerIsExist(message.chat().id());
+
+            customerService.registerCustomer(user.id());
+
 
         // Написать старт в этом блоке расширяясь в сервисы
     }
 
     private void handleCancel(User user, Message message) {
-        if(callBackQueryHandler.flagReport() || customerService.flagCustomer())
-        {
+        if (callBackQueryHandler.flagReport() || customerService.flagCustomer()) {
             callBackQueryHandler.updateFlagReport();
             customerService.updateFlagCustomer();
-        }
-        else {
+            callBackQueryHandler.startMenu(user.id());
+        } else {
             telegramSenderService.send(user.id(), "В данный момент вы ничего не вводите");
 
         }
 
+    }
+
+    private void handelMenu(User user, Message message) {
+        callBackQueryHandler.startMenu(user.id());
     }
 }
 

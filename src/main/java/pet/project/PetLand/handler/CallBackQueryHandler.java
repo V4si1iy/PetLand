@@ -3,6 +3,7 @@ package pet.project.PetLand.handler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,9 @@ import java.util.function.BiConsumer;
 public class CallBackQueryHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum CallBackData)
     private final Map<CallBackData, BiConsumer<User, CallbackQuery>> commandExecute = new HashMap<>();
-   private final InLineKeyboard inLineKeyboard;
-   private final TelegramBot telegramBot;
-   private final ShelterService shelterService;
+    private final InLineKeyboard inLineKeyboard;
+    private final TelegramBot telegramBot;
+    private final ShelterService shelterService;
     private boolean flag = false;
 
     public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService) {
@@ -40,6 +41,9 @@ public class CallBackQueryHandler {
         commandExecute.put(CallBackData.HOW_TAKE_PET, this::handleHowTakePet);
         commandExecute.put(CallBackData.VOLUNTEER, this::handleVolunteer);
         commandExecute.put(CallBackData.REPORT, this::handleReport);
+        commandExecute.put(CallBackData.REPORT_TELEGRAM, this::handleReportTelegram);
+        commandExecute.put(CallBackData.REPORT_YANDEX_FORM, this::handleReportYandexForm);
+
     }
 
 
@@ -53,10 +57,10 @@ public class CallBackQueryHandler {
         User user = callbackQuery.from();
         CallBackData callBackData = CallBackData.parse(callbackQuery.data());
         if (Objects.isNull(callBackData)) {
-          Shelter shelter = shelterService.findByName(callbackQuery.data());
-          if (!Objects.isNull(shelter))
-          { handleAllShelters(callbackQuery, shelter);
-          }
+            Shelter shelter = shelterService.findByName(callbackQuery.data());
+            if (!Objects.isNull(shelter)) {
+                handleAllShelters(callbackQuery, shelter);
+            }
             return;
         }
         handler(user, callBackData, callbackQuery);
@@ -127,23 +131,35 @@ public class CallBackQueryHandler {
     }
 
     private void handleReport(User user, CallbackQuery callbackQuery) {
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                "Как вы хотите представить отчет?")
+                .replyMarkup(inLineKeyboard.choseKindReport());
+        telegramBot.execute(messageText);
+    }
+
+    private void handleReportTelegram(User user, CallbackQuery callbackQuery) {
         this.flag = true;
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Напишите пожалуйста отчет по образцу: \n" +
-                "Имя: <Имя животного> \n"
-                + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n"
-                + "Для отмены напишите /cancel");
-        telegramBot.execute(messageText);
-
-    }
-
-    public void handleAllShelters(CallbackQuery callbackQuery ,Shelter shelter) {
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(),callbackQuery.message().messageId(),shelter.getName()).replyMarkup(inLineKeyboard.shelterInLineKeyboard());
+                        "Имя: <Имя животного> \n"
+                        + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n"
+                        + "Для отмены напишите /cancel");
         telegramBot.execute(messageText);
     }
-    public void startMenu(Long chatId)
-    {
-        if(shelterService.findAll().isEmpty()){
+
+    private void handleReportYandexForm(User user, CallbackQuery callbackQuery) {
+        DeleteMessage delete = new DeleteMessage(user.id(), callbackQuery.message().messageId());
+        telegramBot.execute(delete);
+        startMenu(user.id());
+    }
+
+    public void handleAllShelters(CallbackQuery callbackQuery, Shelter shelter) {
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), shelter.getName()).replyMarkup(inLineKeyboard.shelterInLineKeyboard());
+        telegramBot.execute(messageText);
+    }
+
+    public void startMenu(Long chatId) {
+        if (shelterService.findAll().isEmpty()) {
             telegramBot.execute(new SendMessage(chatId, "В данный момент у нас нет работающих приютов"));
         } else {
             SendMessage newMessage = new SendMessage(chatId, "Выберите приют").replyMarkup(inLineKeyboard.allSheltersInLineKeyboard());

@@ -20,25 +20,27 @@ public class InLineKeyboard {
     public InlineKeyboardMarkup shelterInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
-                new InlineKeyboardButton("Информация").callbackData(CallBackData.SHELTER_INFORMATION.toString()),
-                new InlineKeyboardButton("Как взять питомца").callbackData(CallBackData.HOW_TAKE_PET.toString()),
-                new InlineKeyboardButton("Прислать отчет").callbackData(CallBackData.REPORT.toString()),
-                new InlineKeyboardButton("Рекомендации").callbackData(CallBackData.RECOMMENDATIONS.toString()),
-                new InlineKeyboardButton("Позвать волонтера").callbackData(CallBackData.VOLUNTEER.toString())
+                new InlineKeyboardButton(CallBackData.SHELTER_INFORMATION.name()).callbackData(CallBackData.SHELTER_INFORMATION.toString()),
+                new InlineKeyboardButton(CallBackData.HOW_TAKE_PET.name()).callbackData(CallBackData.HOW_TAKE_PET.toString()),
+                new InlineKeyboardButton(CallBackData.REPORT.name()).callbackData(CallBackData.REPORT.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS.name()).callbackData(CallBackData.RECOMMENDATIONS.toString()),
+                new InlineKeyboardButton(CallBackData.VOLUNTEER.name()).callbackData(CallBackData.VOLUNTEER.toString()),
+                new InlineKeyboardButton(CallBackData.SETTINGS.name()).callbackData(CallBackData.SETTINGS.toString())
 
         };
         inlineKeyboardMarkup.addRow(buttons[0], buttons[1]);
         inlineKeyboardMarkup.addRow(buttons[2], buttons[3]);
         inlineKeyboardMarkup.addRow(buttons[4]);
+        inlineKeyboardMarkup.addRow(buttons[5]);
         return inlineKeyboardMarkup;
     }
 
     public InlineKeyboardMarkup recommendationsInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
-                new InlineKeyboardButton("Техника безопасности").callbackData(CallBackData.RECOMMENDATIONS_SHELTER.toString()),
-                new InlineKeyboardButton("Рекомендации по собаке").callbackData(CallBackData.RECOMMENDATIONS_DOG.toString()),
-                new InlineKeyboardButton("Рекомендации по кошке").callbackData(CallBackData.RECOMMENDATIONS_CAT.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_SHELTER.name()).callbackData(CallBackData.RECOMMENDATIONS_SHELTER.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_DOG.name()).callbackData(CallBackData.RECOMMENDATIONS_DOG.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_CAT.name()).callbackData(CallBackData.RECOMMENDATIONS_CAT.toString()),
 
         };
         inlineKeyboardMarkup.addRow(buttons[0]);
@@ -50,14 +52,27 @@ public class InLineKeyboard {
     public InlineKeyboardMarkup allSheltersInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         shelterService.findAll().forEach(shelter ->
-                {
-                   inlineKeyboardMarkup = inlineKeyboardBuilder(inlineKeyboardMarkup,shelter);
-                }
+                inlineKeyboardMarkup = inlineKeyboardBuilder(inlineKeyboardMarkup,shelter)
         );
         return inlineKeyboardMarkup;
     }
 
     private InlineKeyboardMarkup inlineKeyboardBuilder(InlineKeyboardMarkup inlineKeyboardMarkup, Shelter shelter) {
         return inlineKeyboardMarkup.addRow(new InlineKeyboardButton(shelter.getName()).callbackData(shelter.getName()));
+    }
+
+    public InlineKeyboardMarkup choseKindReport()
+    {
+        inlineKeyboardMarkup=new InlineKeyboardMarkup();
+        InlineKeyboardButton[] buttons = {
+                new InlineKeyboardButton(CallBackData.REPORT_TELEGRAM.name()).callbackData(CallBackData.REPORT_TELEGRAM.toString()),
+                new InlineKeyboardButton(CallBackData.REPORT_YANDEX_FORM.name()).callbackData(CallBackData.REPORT_YANDEX_FORM.toString()).url("https://forms.yandex.ru/u/650ab773068ff033bb7a0a2f/"),
+
+
+        };
+        inlineKeyboardMarkup.addRow(buttons[0]);
+        inlineKeyboardMarkup.addRow(buttons[1]);
+        return inlineKeyboardMarkup;
+
     }
 }
