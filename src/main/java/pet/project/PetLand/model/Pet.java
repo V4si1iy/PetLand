@@ -38,6 +38,11 @@ public class Pet {
     public Pet() {
 
     }
+    public Pet(Long id, int age, String name) {
+        this.id = id;
+        this.age = age;
+        this.name = name;
+    }
 
     // ----------------------------------------------
     public void setFilePath(String filePath) {

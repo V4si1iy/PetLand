@@ -48,8 +48,14 @@ public class CustomerService {
         return (findById(customer.getId()) != null) ? customerRepository.save(customer) : null;
     }
 
-    public void delete(Long id) {
-        customerRepository.deleteById(id);
+    public Customer delete(Long id) {
+        Customer customer = findById(id);
+        if (customer == null) {
+            return null;
+        } else {
+            customerRepository.deleteById(id);
+            return customer;
+        }
     }
 
     public Customer findByChatId(Long id) {
