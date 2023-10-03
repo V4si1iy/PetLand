@@ -4,8 +4,6 @@ import com.pengrad.telegrambot.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import pet.project.PetLand.handler.CallBackQueryHandler;
 import pet.project.PetLand.model.Customer;
 import pet.project.PetLand.model.Pet;
 import pet.project.PetLand.model.Report;
@@ -14,20 +12,13 @@ import pet.project.PetLand.repository.ReportPhotoRepository;
 import pet.project.PetLand.repository.ReportRepository;
 
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.RenderedImage;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,11 +32,13 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final ReportPhotoRepository reportPhotoRepository;
     private final PetService petService;
+   private final TelegramSenderService telegramSenderService;
 
-    public ReportService(ReportRepository reportRepository, ReportPhotoRepository reportPhotoRepository, PetService petService) {
+    public ReportService(ReportRepository reportRepository, ReportPhotoRepository reportPhotoRepository, PetService petService, TelegramSenderService telegramSenderService) {
         this.reportRepository = reportRepository;
         this.reportPhotoRepository = reportPhotoRepository;
         this.petService = petService;
+        this.telegramSenderService = telegramSenderService;
     }
 
 
@@ -76,9 +69,10 @@ public class ReportService {
     /**
      * <p>Метод с помощью регулярных выражений получает строку, которая сформированна телеграм ботом</p>
      * Pattern: <b>(Имя:)(\s)([\W+]+)(\n)(Отчет:)(\s)([\W+]+)</b>
+     *
      * @param message - сообщение полученное от пользователя
      */
-    public void createReport(Message message) {
+    public boolean createReport(Message message) {
         LOGGER.info("Was invoked method to create new Report in db by Telegram bot");
         LOGGER.debug(message.text());
         Matcher matcher = patternReport.matcher(message.text());
@@ -86,8 +80,18 @@ public class ReportService {
             String name = matcher.group(3);
             String report = matcher.group(7);
             Pet pet = petService.findByName(name);
+            if(Objects.isNull(pet)) {
+                LOGGER.debug("Pet with name:" + name + "don't exist");
+                return false;
+            }
             createReport(new Report(report, LocalDateTime.now(), pet));
+            return true;
+        } else {
+            LOGGER.info("Incorrect input of report Telegram");
+            telegramSenderService.send(message.chat().id(),"Неверный формат введите отчет снова");
+            return false;
         }
+
     }
 
     /**
@@ -95,6 +99,7 @@ public class ReportService {
      * form:<p>Name: Name of pet</p><p>First:First paragraph</p><p>Second:Second paragraph</p><p>Third:Third paragraph</p><p>Link:Link on photo by Yandex</p>
      * Pattern: <b>(Name:)(\W+)(\n)(First:)(\W+)(\n)(Second:)(\W+)(\n)(Third:)(\W+)(\n)(Link:)(.+)</b>
      * <a href="https://forms.yandex.ru/u/650ab773068ff033bb7a0a2f/">YandexForm</a>
+     *
      * @param form особый вид формы сделанный Vasiliy
      * @throws IOException ошибка обработки фото через url
      */

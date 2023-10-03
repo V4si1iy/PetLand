@@ -34,9 +34,10 @@ public class UpdateHandler {
         {
             if (callBackQueryHandler.flagReport()) // если стоит флаг то получаем ручной ввод Отчета
             {
-                reportService.createReport(update.message());
-                callBackQueryHandler.updateFlagReport();
-                callBackQueryHandler.startMenu(update.message().chat().id());
+                if (reportService.createReport(update.message())) {
+                    callBackQueryHandler.updateFlagReport();
+                    callBackQueryHandler.startMenu(update.message().chat().id());
+                }
 
             } else if (customerService.flagCustomer()) // если стоит флаг то получаем ручной ввод Анкеты
             {
