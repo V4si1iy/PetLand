@@ -6,10 +6,13 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.model.Shelter;
 import pet.project.PetLand.service.InLineKeyboard;
+import pet.project.PetLand.service.ReportService;
 import pet.project.PetLand.service.ShelterService;
 
 import java.util.HashMap;
@@ -25,6 +28,8 @@ public class CallBackQueryHandler {
     private final TelegramBot telegramBot;
     private final ShelterService shelterService;
     private boolean flag = false;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
 
     public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService) {
         // пример добавления команды: commandExecute.put(CallBackData.<Button>, this::handle<Button>);
@@ -77,6 +82,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleInformationShelter(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show information about shelter");
         EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Здесь должна быть информация");
         telegramBot.execute(editMessage);
@@ -84,6 +90,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleRecommendations(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show recommendation menu");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Какая рекомендация вам нужна?")
                 .replyMarkup(inLineKeyboard.recommendationsInLineKeyboard());
@@ -91,6 +98,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleRecommendationShelter(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show recommendation about shelter");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Здесь должна быть техника безопасни в приюте и рекомендации по приюту");
         telegramBot.execute(messageText);
@@ -99,6 +107,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleRecommendationDog(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show recommendation about dog");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Здесь рекомендации по ухаживанию собаки и щенка");
         telegramBot.execute(messageText);
@@ -107,6 +116,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleRecommendationCat(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show recommendation about cat");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Здесь рекомендации по ухаживанию кошки и котенка");
         telegramBot.execute(messageText);
@@ -115,6 +125,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleHowTakePet(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show information about how take pet");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Здесь должна быть информация как взять питомца");
         telegramBot.execute(messageText);
@@ -123,6 +134,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleVolunteer(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to ask volunteer");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Спасибо что оставили заявку на звонок,ближайшее время с вами свяжется наш волонтер");
         telegramBot.execute(messageText);
@@ -131,6 +143,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleReport(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to show report menu");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Как вы хотите представить отчет?")
                 .replyMarkup(inLineKeyboard.choseKindReport());
@@ -138,6 +151,7 @@ public class CallBackQueryHandler {
     }
 
     private void handleReportTelegram(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to get report by telegram bot");
         this.flag = true;
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
                 "Напишите пожалуйста отчет по образцу: \n" +
@@ -148,17 +162,20 @@ public class CallBackQueryHandler {
     }
 
     private void handleReportYandexForm(User user, CallbackQuery callbackQuery) {
+        LOGGER.info("Was invoked method to get report by Yandex Form");
         DeleteMessage delete = new DeleteMessage(user.id(), callbackQuery.message().messageId());
         telegramBot.execute(delete);
         startMenu(user.id());
     }
 
     public void handleAllShelters(CallbackQuery callbackQuery, Shelter shelter) {
+        LOGGER.info("Was invoked method to show all shelters");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), shelter.getName()).replyMarkup(inLineKeyboard.shelterInLineKeyboard());
         telegramBot.execute(messageText);
     }
 
     public void startMenu(Long chatId) {
+        LOGGER.info("Was invoked method to show start menu");
         if (shelterService.findAll().isEmpty()) {
             telegramBot.execute(new SendMessage(chatId, "В данный момент у нас нет работающих приютов"));
         } else {
@@ -169,10 +186,13 @@ public class CallBackQueryHandler {
 
 
     public boolean flagReport() {
+        LOGGER.info("Was invoked method to get flag report");
+        LOGGER.debug(String.valueOf(flag));
         return flag;
     }
 
     public void updateFlagReport() {
+        LOGGER.info("Was invoked method to change flag report to false");
         flag = false;
     }
 

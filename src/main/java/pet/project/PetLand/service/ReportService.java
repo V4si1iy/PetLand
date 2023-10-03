@@ -79,6 +79,8 @@ public class ReportService {
      * @param message - сообщение полученное от пользователя
      */
     public void createReport(Message message) {
+        LOGGER.info("Was invoked method to create new Report in db by Telegram bot");
+        LOGGER.debug(message.text());
         Matcher matcher = patternReport.matcher(message.text());
         if (matcher.matches()) {
             String name = matcher.group(3);
@@ -97,6 +99,8 @@ public class ReportService {
      * @throws IOException ошибка обработки фото через url
      */
     public void createReportYandexForm(String form) throws IOException {
+        LOGGER.info("Was invoked method to create new Report in db by Yandex Form");
+        LOGGER.debug(form);
         Matcher matcher = patternReportForm.matcher(form);
         if (matcher.matches()) {
             String name = matcher.group(2);

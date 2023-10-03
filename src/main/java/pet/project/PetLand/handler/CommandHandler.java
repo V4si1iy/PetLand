@@ -2,6 +2,8 @@ package pet.project.PetLand.handler;
 
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.Command;
 import pet.project.PetLand.service.CustomerService;
@@ -18,6 +20,8 @@ public class CommandHandler {
     private final CustomerService customerService;
     private final CallBackQueryHandler callBackQueryHandler;
     private final TelegramSenderService telegramSenderService;
+    private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
+
 
     public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService) {
         this.customerService = customerService;
@@ -47,7 +51,7 @@ public class CommandHandler {
     }
 
     private void handleStart(User user, Message message) {
-
+        LOGGER.info("Was invoked method -> /start");
             customerService.registerCustomer(user.id());
 
 
@@ -55,6 +59,7 @@ public class CommandHandler {
     }
 
     private void handleCancel(User user, Message message) {
+        LOGGER.info("Was invoked method -> /cancel");
         if (callBackQueryHandler.flagReport() || customerService.flagCustomer()) {
             callBackQueryHandler.updateFlagReport();
             customerService.updateFlagCustomer();
@@ -67,6 +72,7 @@ public class CommandHandler {
     }
 
     private void handelMenu(User user, Message message) {
+        LOGGER.info("Was invoked method -> /menu");
         callBackQueryHandler.startMenu(user.id());
     }
 }
