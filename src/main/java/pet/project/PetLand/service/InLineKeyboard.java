@@ -20,12 +20,12 @@ public class InLineKeyboard {
     public InlineKeyboardMarkup shelterInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
-                new InlineKeyboardButton(CallBackData.SHELTER_INFORMATION.name()).callbackData(CallBackData.SHELTER_INFORMATION.toString()),
-                new InlineKeyboardButton(CallBackData.HOW_TAKE_PET.name()).callbackData(CallBackData.HOW_TAKE_PET.toString()),
-                new InlineKeyboardButton(CallBackData.REPORT.name()).callbackData(CallBackData.REPORT.toString()),
-                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS.name()).callbackData(CallBackData.RECOMMENDATIONS.toString()),
-                new InlineKeyboardButton(CallBackData.VOLUNTEER.name()).callbackData(CallBackData.VOLUNTEER.toString()),
-                new InlineKeyboardButton(CallBackData.SETTINGS.name()).callbackData(CallBackData.SETTINGS.toString())
+                new InlineKeyboardButton(CallBackData.SHELTER_INFORMATION.getName()).callbackData(CallBackData.SHELTER_INFORMATION.toString()),
+                new InlineKeyboardButton(CallBackData.HOW_TAKE_PET.getName()).callbackData(CallBackData.HOW_TAKE_PET.toString()),
+                new InlineKeyboardButton(CallBackData.REPORT.getName()).callbackData(CallBackData.REPORT.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS.getName()).callbackData(CallBackData.RECOMMENDATIONS.toString()),
+                new InlineKeyboardButton(CallBackData.VOLUNTEER.getName()).callbackData(CallBackData.VOLUNTEER.toString()),
+                new InlineKeyboardButton(CallBackData.SETTINGS.getName()).callbackData(CallBackData.SETTINGS.toString())
 
         };
         inlineKeyboardMarkup.addRow(buttons[0], buttons[1]);
@@ -38,9 +38,9 @@ public class InLineKeyboard {
     public InlineKeyboardMarkup recommendationsInLineKeyboard() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
-                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_SHELTER.name()).callbackData(CallBackData.RECOMMENDATIONS_SHELTER.toString()),
-                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_DOG.name()).callbackData(CallBackData.RECOMMENDATIONS_DOG.toString()),
-                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_CAT.name()).callbackData(CallBackData.RECOMMENDATIONS_CAT.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_SHELTER.getName()).callbackData(CallBackData.RECOMMENDATIONS_SHELTER.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_DOG.getName()).callbackData(CallBackData.RECOMMENDATIONS_DOG.toString()),
+                new InlineKeyboardButton(CallBackData.RECOMMENDATIONS_CAT.getName()).callbackData(CallBackData.RECOMMENDATIONS_CAT.toString()),
 
         };
         inlineKeyboardMarkup.addRow(buttons[0]);
@@ -65,8 +65,8 @@ public class InLineKeyboard {
     {
         inlineKeyboardMarkup=new InlineKeyboardMarkup();
         InlineKeyboardButton[] buttons = {
-                new InlineKeyboardButton(CallBackData.REPORT_TELEGRAM.name()).callbackData(CallBackData.REPORT_TELEGRAM.toString()),
-                new InlineKeyboardButton(CallBackData.REPORT_YANDEX_FORM.name()).callbackData(CallBackData.REPORT_YANDEX_FORM.toString()).url("https://forms.yandex.ru/u/650ab773068ff033bb7a0a2f/"),
+                new InlineKeyboardButton(CallBackData.REPORT_TELEGRAM.getName()).callbackData(CallBackData.REPORT_TELEGRAM.toString()),
+                new InlineKeyboardButton(CallBackData.REPORT_YANDEX_FORM.getName()).callbackData(CallBackData.REPORT_YANDEX_FORM.toString()).url("https://forms.yandex.ru/u/650ab773068ff033bb7a0a2f/"),
 
 
         };

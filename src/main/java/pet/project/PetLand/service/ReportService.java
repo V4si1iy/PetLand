@@ -13,6 +13,7 @@ import pet.project.PetLand.repository.ReportRepository;
 
 
 import java.io.*;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,13 +27,13 @@ import java.util.regex.Pattern;
 public class ReportService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
     private final Pattern patternReport = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\n)(Отчет:)(\\s)([\\W+]+)");
-    private final Pattern patternReportForm = Pattern.compile("(Name:)(\\W+)(\\n)(First:)(\\W+)(\\n)(Second:)(\\W+)(\\n)(Third:)(\\W+)(\\n)(Link:)(.+)");
+    private final Pattern patternReportForm = Pattern.compile("(Name:)([\\W+]+)(\\n)(First:)([\\W+]+)(\\n)(Second:)([\\W+]+)(\\n)(Third:)([\\W+]+)(\\n)(Link:)(.+)");
 
 
     private final ReportRepository reportRepository;
     private final ReportPhotoRepository reportPhotoRepository;
     private final PetService petService;
-   private final TelegramSenderService telegramSenderService;
+    private final TelegramSenderService telegramSenderService;
 
     public ReportService(ReportRepository reportRepository, ReportPhotoRepository reportPhotoRepository, PetService petService, TelegramSenderService telegramSenderService) {
         this.reportRepository = reportRepository;
@@ -80,15 +81,16 @@ public class ReportService {
             String name = matcher.group(3);
             String report = matcher.group(7);
             Pet pet = petService.findByName(name);
-            if(Objects.isNull(pet)) {
+            if (Objects.isNull(pet)) {
                 LOGGER.debug("Pet with name:" + name + "don't exist");
+                telegramSenderService.send(message.chat().id(), "Неверное имя, введите отчет снова");
                 return false;
             }
             createReport(new Report(report, LocalDateTime.now(), pet));
             return true;
         } else {
             LOGGER.info("Incorrect input of report Telegram");
-            telegramSenderService.send(message.chat().id(),"Неверный формат введите отчет снова");
+            telegramSenderService.send(message.chat().id(), "Неверный формат, введите отчет снова");
             return false;
         }
 
@@ -118,11 +120,11 @@ public class ReportService {
             createReport(report);
 
 //            Реализация получения фото через яндекс форму(пока не прикручена не получается адекватно скачать фотку из инета по ссылке)
-//             URL url = new URL(matcher.group(14));
-//             RenderedImage link = ImageIO.read(url);
-//             ReportPhoto reportPhoto = new ReportPhoto(((DataBufferByte) link.getData().getDataBuffer()).getData());
-//              reportPhoto.addReportPhoto(report);
-//              createReportToPhoto(reportPhoto);
+//            URL url = new URL(matcher.group(14));
+//            RenderedImage link = ImageIO.read(url);
+//            ReportPhoto reportPhoto = new ReportPhoto(((DataBufferByte) link.getData().getDataBuffer()).getData());
+//            reportPhoto.addReportPhoto(report);
+//            createReportToPhoto(reportPhoto);
         }
     }
 

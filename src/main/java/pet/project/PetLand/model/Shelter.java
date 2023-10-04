@@ -18,6 +18,12 @@ public class Shelter { // Таблица: Приют
     private String locationMap; // ссылка на схему проезда
     private String description; // описание приюта
     private String rules; // правила приюта
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "volunteer_shelter",
+            joinColumns = @JoinColumn(name = "shelter_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "volunteer_id", referencedColumnName = "id"))
+    @JsonIgnore
+    private Set<Volunteer> volunteers = new HashSet<>();
 
     public Shelter(long id, String name, String address, String locationMap, String description, String rules, Set<Volunteer> volunteers) {
         this.id = id;
@@ -89,12 +95,7 @@ public class Shelter { // Таблица: Приют
         this.volunteers = volunteers;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "volunteer_shelter",
-            joinColumns = @JoinColumn(name = "shelter_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "volunteer_id", referencedColumnName = "id"))
-    @JsonIgnore
-    private Set<Volunteer> volunteers = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

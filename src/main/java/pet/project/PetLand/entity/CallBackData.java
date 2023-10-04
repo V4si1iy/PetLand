@@ -22,6 +22,11 @@ public enum CallBackData // перечисление кнопок в боте
 
     private final String description;
 
+    public final String getName()
+    {
+        return name;
+    }
+
     /**
      * парсер для поиска команда в enum
      *
