@@ -23,7 +23,7 @@ public class Shelter { // Таблица: Приют
             joinColumns = @JoinColumn(name = "shelter_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "volunteer_id", referencedColumnName = "id"))
     @JsonIgnore
-    private Set<Volunteer> volunteers = new HashSet<>();
+    private Set<Volunteer> volunteers;
 
     public Shelter(long id, String name, String address, String locationMap, String description, String rules, Set<Volunteer> volunteers) {
         this.id = id;

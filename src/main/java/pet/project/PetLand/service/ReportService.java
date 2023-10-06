@@ -12,8 +12,13 @@ import pet.project.PetLand.repository.ReportPhotoRepository;
 import pet.project.PetLand.repository.ReportRepository;
 
 
+import java.awt.*;
+import java.awt.image.DataBufferByte;
+import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,12 +28,12 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.awt.Toolkit.getDefaultToolkit;
+
 @Service
 public class ReportService {
     private final static Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
     private final Pattern patternReport = Pattern.compile("(Имя:)(\\s)([\\W+]+)(\\n)(Отчет:)(\\s)([\\W+]+)");
-    private final Pattern patternReportForm = Pattern.compile("(Name:)([\\W+]+)(\\n)(First:)([\\W+]+)(\\n)(Second:)([\\W+]+)(\\n)(Third:)([\\W+]+)(\\n)(Link:)(.+)");
-
 
     private final ReportRepository reportRepository;
     private final ReportPhotoRepository reportPhotoRepository;
@@ -98,8 +103,8 @@ public class ReportService {
 
     /**
      * Метод с помощью регулярных выражений получает строку, которая сформированна яндекс формой
-     * form:<p>Name: Name of pet</p><p>First:First paragraph</p><p>Second:Second paragraph</p><p>Third:Third paragraph</p><p>Link:Link on photo by Yandex</p>
-     * Pattern: <b>(Name:)(\W+)(\n)(First:)(\W+)(\n)(Second:)(\W+)(\n)(Third:)(\W+)(\n)(Link:)(.+)</b>
+     * form:<p>Name</p><p>First paragraph</p><p>Second paragraph</p><p>Third paragraph</p><p>Link on photo by Yandex</p>
+     * Pattern: <b>(\W+)(\n)(\W+)(\n)(\W+)(\n)(\W+)(\n)(.+)</b>
      * <a href="https://forms.yandex.ru/u/650ab773068ff033bb7a0a2f/">YandexForm</a>
      *
      * @param form особый вид формы сделанный Vasiliy
@@ -108,23 +113,20 @@ public class ReportService {
     public void createReportYandexForm(String form) throws IOException {
         LOGGER.info("Was invoked method to create new Report in db by Yandex Form");
         LOGGER.debug(form);
-        Matcher matcher = patternReportForm.matcher(form);
-        if (matcher.matches()) {
-            String name = matcher.group(2);
-            String first = matcher.group(5);
-            String second = matcher.group(8);
-            String third = matcher.group(11);
+        String[] parts = form.split("\n");
+        if (parts.length == 5) {
+            Pet pet = petService.findByName(parts[0]);
 
-            Pet pet = petService.findByName(name);
-            Report report = new Report(first + " " + second + " " + third, LocalDateTime.now(), pet);
-            createReport(report);
+            if (!Objects.isNull(pet)) {
+                Report report = new Report(parts[1] + ". " + parts[2] + ". " + parts[3]+ ".", LocalDateTime.now(), pet);
+                URL url = new URL(parts[4]);
+                BufferedInputStream in = new BufferedInputStream(url.openStream());
+                ReportPhoto reportPhoto= new ReportPhoto(in.readAllBytes());
+                reportPhoto.addReportToPhoto(report);
+                createReport(report);
+                createReportPhoto(reportPhoto);
+            }
 
-//            Реализация получения фото через яндекс форму(пока не прикручена не получается адекватно скачать фотку из инета по ссылке)
-//            URL url = new URL(matcher.group(14));
-//            RenderedImage link = ImageIO.read(url);
-//            ReportPhoto reportPhoto = new ReportPhoto(((DataBufferByte) link.getData().getDataBuffer()).getData());
-//            reportPhoto.addReportPhoto(report);
-//            createReportToPhoto(reportPhoto);
         }
     }
 

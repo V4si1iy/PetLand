@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import pet.project.PetLand.util.Constant;
+
+import static pet.project.PetLand.util.Constant.*;
+
+
 @Service
 public class CallBackQueryHandler {
     // Хранилище для команд (добавление новых команд через конструктор + enum CallBackData)
@@ -30,6 +36,7 @@ public class CallBackQueryHandler {
     private boolean flag = false;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
+    private Shelter shelter;
 
     public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService) {
         // пример добавления команды: commandExecute.put(CallBackData.<Button>, this::handle<Button>);
@@ -64,6 +71,7 @@ public class CallBackQueryHandler {
         if (Objects.isNull(callBackData)) {
             Shelter shelter = shelterService.findByName(callbackQuery.data());
             if (!Objects.isNull(shelter)) {
+                this.shelter = shelter;
                 handleAllShelters(callbackQuery, shelter);
             }
             return;
@@ -84,23 +92,23 @@ public class CallBackQueryHandler {
     private void handleInformationShelter(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show information about shelter");
         EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Здесь должна быть информация");
+                "Адресс:" + shelter.getAddress() + "\n" +
+                        "Описание:" + shelter.getDescription() + "\n" +
+                        "Правила:" + shelter.getRules() + "\n" +
+                        "Как зайти в здание:" + shelter.getLocationMap());
         telegramBot.execute(editMessage);
         startMenu(user.id());
     }
 
     private void handleRecommendations(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show recommendation menu");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Какая рекомендация вам нужна?")
-                .replyMarkup(inLineKeyboard.recommendationsInLineKeyboard());
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Какая рекомендация вам нужна?").replyMarkup(inLineKeyboard.recommendationsInLineKeyboard());
         telegramBot.execute(messageText);
     }
 
     private void handleRecommendationShelter(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show recommendation about shelter");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Здесь должна быть техника безопасни в приюте и рекомендации по приюту");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), REASONS_FOR_REFUSAL + "Если вы собираетесь в приют для собак:\n" + DOG_SHELTER_SAFETY + "Если вы собираетесь в приют для кошек:\n" + CAT_SHELTER_SAFETY);
         telegramBot.execute(messageText);
         startMenu(user.id());
 
@@ -108,26 +116,34 @@ public class CallBackQueryHandler {
 
     private void handleRecommendationDog(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show recommendation about dog");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Здесь рекомендации по ухаживанию собаки и щенка");
-        telegramBot.execute(messageText);
+        executeRecommendationAnimal(user,callbackQuery,DOG_TRANSPORTATION,HOME_FOR_PUPPY,HOME_FOR_ADULT_DOG,HOME_FOR_RESTRICTED_DOG);
         startMenu(user.id());
 
     }
 
     private void handleRecommendationCat(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show recommendation about cat");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Здесь рекомендации по ухаживанию кошки и котенка");
-        telegramBot.execute(messageText);
+        executeRecommendationAnimal(user,callbackQuery,CAT_TRANSPORTATION,HOME_FOR_KITTY, HOME_FOR_ADULT_CAT,HOME_FOR_RESTRICTED_CAT);
         startMenu(user.id());
+
+    }
+    private void executeRecommendationAnimal(User user,CallbackQuery callbackQuery, String text1 , String text2, String tex3,String text4)
+    {
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), text1);
+        SendMessage message1 = new SendMessage(user.id(), text2);
+        SendMessage message2 = new SendMessage(user.id(), tex3);
+        SendMessage message3 = new SendMessage(user.id(), text4);
+
+        telegramBot.execute(messageText);
+        telegramBot.execute(message1);
+        telegramBot.execute(message2);
+        telegramBot.execute(message3);
 
     }
 
     private void handleHowTakePet(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show information about how take pet");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Здесь должна быть информация как взять питомца");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь должна быть информация как взять питомца");
         telegramBot.execute(messageText);
         startMenu(user.id());
 
@@ -135,8 +151,7 @@ public class CallBackQueryHandler {
 
     private void handleVolunteer(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to ask volunteer");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Спасибо что оставили заявку на звонок,ближайшее время с вами свяжется наш волонтер");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Спасибо что оставили заявку на звонок,ближайшее время с вами свяжется наш волонтер");
         telegramBot.execute(messageText);
         startMenu(user.id());
 
@@ -144,20 +159,14 @@ public class CallBackQueryHandler {
 
     private void handleReport(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show report menu");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Как вы хотите представить отчет?")
-                .replyMarkup(inLineKeyboard.choseKindReport());
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Как вы хотите представить отчет?").replyMarkup(inLineKeyboard.choseKindReport());
         telegramBot.execute(messageText);
     }
 
     private void handleReportTelegram(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to get report by telegram bot");
         this.flag = true;
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Напишите пожалуйста отчет по образцу: \n" +
-                        "Имя: <Имя животного> \n"
-                        + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n"
-                        + "Для отмены напишите /cancel");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Напишите пожалуйста отчет по образцу: \n" + "Имя: <Имя животного> \n" + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n" + "Для отмены напишите /cancel");
         telegramBot.execute(messageText);
     }
 
