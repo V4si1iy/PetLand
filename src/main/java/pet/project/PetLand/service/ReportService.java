@@ -49,14 +49,28 @@ public class ReportService {
     }
 
 
+    /**
+     * Метод ищет все отчеты в базе данных. (Table - Report)
+     * @return - найденные отчеты
+     */
     public List<Report> findAllReports() {
         return reportRepository.findAll();
     }
 
+    /**
+     * Метод ищет отчет по ID в базе данных. (Table - Report)
+     * @param id - ID искомого отчета.
+     * @return - найденный отчет
+     */
     public Report findReportById(long id) {
         return reportRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Метод удаляет отчет по ID из базы данных. (Table - Report)
+     * @param id - ID удаляемого отчеты.
+     * @return - удаленный отчет
+     */
     public Report deleteReport(long id) {
         Report report = findReportById(id);
         if (report != null) {
@@ -65,6 +79,11 @@ public class ReportService {
         return report;
     }
 
+    /**
+     * Метод добавляет отчет в базу данных. (Table - Report)
+     * @param report - отчет, который надо добавить.
+     * @return - добавленный отчет
+     */
     public Report createReport(Report report) {
         return reportRepository.save(report);
     }
@@ -121,6 +140,12 @@ public class ReportService {
         }
     }
 
+
+    /**
+     * Метод обновляет отчет в базе данных.
+     * @param report - ID отчета, который надо обновить.
+     * @return - обновленный отчет
+     */
     public Report updateReport(Report report) {
         return reportRepository.save(report);
     }

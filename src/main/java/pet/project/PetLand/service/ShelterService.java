@@ -13,6 +13,11 @@ public class ShelterService {
         this.shelterRepository = shelterRepository;
     }
 
+    /**
+     * Метод ищет все приюты в базе данных
+     * @return найденные приюты
+     * @see ShelterRepository#findAll()
+     */
     public List<Shelter> findAll() {
         return shelterRepository.findAll();
     }
@@ -25,6 +30,11 @@ public class ShelterService {
         return shelterRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Метод добавляет приют в базу данных
+     * @param shelter - приют, который надо добавить
+     * @return добавленный приют
+     */
     public Shelter create(Shelter shelter) {
         return shelterRepository.save(shelter);
     }
