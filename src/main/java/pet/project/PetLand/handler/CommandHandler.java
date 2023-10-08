@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.Command;
+import pet.project.PetLand.entity.Flag;
 import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.TelegramSenderService;
 
@@ -20,13 +21,15 @@ public class CommandHandler {
     private final CustomerService customerService;
     private final CallBackQueryHandler callBackQueryHandler;
     private final TelegramSenderService telegramSenderService;
+    private final ManualInputHandler manualInputHandler;
     private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
 
 
-    public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService) {
+    public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService, ManualInputHandler manualInputHandler) {
         this.customerService = customerService;
         this.callBackQueryHandler = callBackQueryHandler;
         this.telegramSenderService = telegramSenderService;
+        this.manualInputHandler = manualInputHandler;
 
         commandExecute.put(Command.START, this::handleStart); // Добавление команд в хранилище (новые делать по примеру)
         commandExecute.put(Command.CANCEL, this::handleCancel);
@@ -60,9 +63,8 @@ public class CommandHandler {
 
     private void handleCancel(User user, Message message) {
         LOGGER.info("Was invoked method -> /cancel");
-        if (callBackQueryHandler.flagReport() || customerService.flagCustomer()) {
-            callBackQueryHandler.updateFlagReport();
-            customerService.updateFlagCustomer();
+        if (manualInputHandler.flag() != Flag.None) {
+            manualInputHandler.flagNone();
             callBackQueryHandler.startMenu(user.id());
         } else {
             telegramSenderService.send(user.id(), "В данный момент вы ничего не вводите");

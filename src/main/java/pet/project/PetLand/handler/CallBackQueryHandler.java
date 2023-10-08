@@ -6,22 +6,18 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.model.Shelter;
 import pet.project.PetLand.service.InLineKeyboard;
-import pet.project.PetLand.service.ReportService;
 import pet.project.PetLand.service.ShelterService;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-
-import pet.project.PetLand.util.Constant;
 
 import static pet.project.PetLand.util.Constant.*;
 
@@ -33,16 +29,17 @@ public class CallBackQueryHandler {
     private final InLineKeyboard inLineKeyboard;
     private final TelegramBot telegramBot;
     private final ShelterService shelterService;
-    private boolean flag = false;
+    private final ManualInputHandler manualInputHandler;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
     private Shelter shelter;
 
-    public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService) {
+    public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService, ManualInputHandler manualInputHandler) {
         // пример добавления команды: commandExecute.put(CallBackData.<Button>, this::handle<Button>);
         this.inLineKeyboard = inLineKeyboard;
         this.telegramBot = telegramBot;
         this.shelterService = shelterService;
+        this.manualInputHandler = manualInputHandler;
 
 
         commandExecute.put(CallBackData.RECOMMENDATIONS, this::handleRecommendations);
@@ -92,10 +89,10 @@ public class CallBackQueryHandler {
     private void handleInformationShelter(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show information about shelter");
         EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Адресс:" + shelter.getAddress() + "\n" +
-                        "Описание:" + shelter.getDescription() + "\n" +
-                        "Правила:" + shelter.getRules() + "\n" +
-                        "Как зайти в здание:" + shelter.getLocationMap());
+                "Адресс: " + shelter.getAddress() + "\n" +
+                        "Описание: " + shelter.getDescription() + "\n" +
+                        "Правила: " + shelter.getRules() + "\n" +
+                        "Как зайти в здание: " + shelter.getLocationMap());
         telegramBot.execute(editMessage);
         startMenu(user.id());
     }
@@ -165,7 +162,7 @@ public class CallBackQueryHandler {
 
     private void handleReportTelegram(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to get report by telegram bot");
-        this.flag = true;
+        manualInputHandler.flagReport();
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Напишите пожалуйста отчет по образцу: \n" + "Имя: <Имя животного> \n" + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n" + "Для отмены напишите /cancel");
         telegramBot.execute(messageText);
     }
@@ -178,31 +175,19 @@ public class CallBackQueryHandler {
     }
 
     public void handleAllShelters(CallbackQuery callbackQuery, Shelter shelter) {
-        LOGGER.info("Was invoked method to show all shelters");
+        LOGGER.info("Was invoked method to show menu of shelter");
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), shelter.getName()).replyMarkup(inLineKeyboard.shelterInLineKeyboard());
         telegramBot.execute(messageText);
     }
 
     public void startMenu(Long chatId) {
-        LOGGER.info("Was invoked method to show start menu");
+        LOGGER.info("Was invoked method to show all shelters");
         if (shelterService.findAll().isEmpty()) {
             telegramBot.execute(new SendMessage(chatId, "В данный момент у нас нет работающих приютов"));
         } else {
             SendMessage newMessage = new SendMessage(chatId, "Выберите приют").replyMarkup(inLineKeyboard.allSheltersInLineKeyboard());
             telegramBot.execute(newMessage);
         }
-    }
-
-
-    public boolean flagReport() {
-        LOGGER.info("Was invoked method to get flag report");
-        LOGGER.debug(String.valueOf(flag));
-        return flag;
-    }
-
-    public void updateFlagReport() {
-        LOGGER.info("Was invoked method to change flag report to false");
-        flag = false;
     }
 
 }
