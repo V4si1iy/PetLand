@@ -1,6 +1,8 @@
 package pet.project.PetLand.handler;
 
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ public class UpdateHandler {
     private final CallBackQueryHandler callBackQueryHandler;
     private final CommandHandler commandHandler;
     private final ReportService reportService;
-    private final CustomerService customerService;
+    private CustomerService customerService;
 
     /**
      * Метод для обработки всех данных полученных от бота (<b> Главный метод иерархии обработчиков </b>)
@@ -41,5 +43,17 @@ public class UpdateHandler {
                 callBackQueryHandler.sendStartMenu(update.callbackQuery());
             }
         }
+    }
+    @Async
+    public void handleUserInputForForm(User user, Message message) {
+        if (customerService.isFillingOutForm()) {
+            customerService.startFillingOutForm();
+        } else if (customerService.flagCustomer()) {
+            customerService.stopFillingOutForm();
+        }
+    }
+
+    public void FormHandlerService(CustomerService customerService) {
+        this.customerService = customerService;
     }
 }

@@ -78,4 +78,19 @@ public class CustomerService {
         }
 
     }
+
+    private boolean isFillingOutForm = false;
+
+    public void startFillingOutForm() {
+        isFillingOutForm = true;
+    }
+
+    public void stopFillingOutForm() {
+        isFillingOutForm = false;
+    }
+
+    public boolean isFillingOutForm() {
+        return isFillingOutForm;
+    }
+
 }
