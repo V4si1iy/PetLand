@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.Flag;
 import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.ReportService;
+import pet.project.PetLand.util.FlagInput;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,34 +21,37 @@ public class ManualInputHandler {
     private final ReportService reportService;
     private final CustomerService customerService;
     private final CallBackQueryHandler callBackQueryHandler;
+    private final FlagInput flagInput;
 
-    public ManualInputHandler(ReportService reportService, CustomerService customerService, CallBackQueryHandler callBackQueryHandler) {
+    public ManualInputHandler(ReportService reportService, CustomerService customerService, CallBackQueryHandler callBackQueryHandler, FlagInput flagInput) {
         this.reportService = reportService;
         this.customerService = customerService;
         this.callBackQueryHandler = callBackQueryHandler;
+        this.flagInput = flagInput;
         commandExecute.put(Flag.Report, this::reportHandler);
         commandExecute.put(Flag.Customer, this::reportCustomerStart);
     }
 
     /**
      * Метод обрабатывает весь пользовательский ввод из телеграм бота
+     *
      * @param user
      * @param message
      */
     protected void handler(User user, Message message) {
-            Flag[] flags = Flag.values();
-            for (Flag data : flags) {
-                if (flag() == data) {
-                    commandExecute.get(data).accept(user, message);
-                    break;
-                }
+        Flag[] flags = Flag.values();
+        for (Flag data : flags) {
+            if (flagInput.flag() == data) {
+                commandExecute.get(data).accept(user, message);
+                break;
             }
+        }
     }
 
     private void reportHandler(User user, Message message) {
         LOGGER.info("Was invoked method to input Report by user");
         if (reportService.createReport(message)) {
-            flagNone();
+            flagInput.flagNone();
             callBackQueryHandler.startMenu(user.id());
         }
     }
@@ -55,32 +59,8 @@ public class ManualInputHandler {
     private void reportCustomerStart(User user, Message message) {
         LOGGER.info("Was invoked method to input Customer name and surname by user");
         customerService.createCustomerStart(message.chat(), message);
-        flagNone();
+        flagInput.flagNone();
         callBackQueryHandler.startMenu(user.id());
-    }
-
-
-    private static Flag flag = Flag.None;
-
-    public Flag flag() {
-        LOGGER.info("Was invoked method to get flag");
-        LOGGER.debug(String.valueOf(flag));
-        return flag;
-    }
-
-    public void flagNone() {
-        LOGGER.info("Was invoked method to change flag to None");
-        flag = Flag.None;
-    }
-
-    public void flagCustomer() {
-        LOGGER.info("Was invoked method to change flag to Customer");
-        flag = Flag.Customer;
-    }
-
-    public void flagReport() {
-        LOGGER.info("Was invoked method to change flag report to Report");
-        flag = Flag.Report;
     }
 
 

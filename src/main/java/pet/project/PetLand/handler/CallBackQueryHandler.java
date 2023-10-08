@@ -13,6 +13,7 @@ import pet.project.PetLand.entity.CallBackData;
 import pet.project.PetLand.model.Shelter;
 import pet.project.PetLand.service.InLineKeyboard;
 import pet.project.PetLand.service.ShelterService;
+import pet.project.PetLand.util.FlagInput;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,17 +30,17 @@ public class CallBackQueryHandler {
     private final InLineKeyboard inLineKeyboard;
     private final TelegramBot telegramBot;
     private final ShelterService shelterService;
-    private final ManualInputHandler manualInputHandler;
+    private final FlagInput flagInput;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
     private Shelter shelter;
 
-    public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService, ManualInputHandler manualInputHandler) {
+    public CallBackQueryHandler(InLineKeyboard inLineKeyboard, TelegramBot telegramBot, ShelterService shelterService, FlagInput flagInput) {
         // пример добавления команды: commandExecute.put(CallBackData.<Button>, this::handle<Button>);
         this.inLineKeyboard = inLineKeyboard;
         this.telegramBot = telegramBot;
         this.shelterService = shelterService;
-        this.manualInputHandler = manualInputHandler;
+        this.flagInput = flagInput;
 
 
         commandExecute.put(CallBackData.RECOMMENDATIONS, this::handleRecommendations);
@@ -162,7 +163,7 @@ public class CallBackQueryHandler {
 
     private void handleReportTelegram(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to get report by telegram bot");
-        manualInputHandler.flagReport();
+        flagInput.flagReport();
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Напишите пожалуйста отчет по образцу: \n" + "Имя: <Имя животного> \n" + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n" + "Для отмены напишите /cancel");
         telegramBot.execute(messageText);
     }

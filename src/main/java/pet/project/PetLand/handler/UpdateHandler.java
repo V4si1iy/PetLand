@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pet.project.PetLand.entity.Flag;
 import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.ReportService;
+import pet.project.PetLand.util.FlagInput;
 
 import java.util.Objects;
 
@@ -17,6 +18,7 @@ public class UpdateHandler {
     private final CommandHandler commandHandler;
 
     private final ManualInputHandler manualInputHandler;
+    private final FlagInput flagInput;
 
     /**
      * Метод для обработки всех данных полученных от бота (<b> Главный метод иерархии обработчиков </b>)
@@ -31,7 +33,7 @@ public class UpdateHandler {
         } else if (!update.message().text().isEmpty() && update.message().text().startsWith("/")) // поиск команд через "/"
         {
             commandHandler.handler(update.message().from(), update.message());
-        } else if (!update.message().text().isEmpty() && manualInputHandler.flag() != Flag.None)// проверка на ввод пользователя
+        } else if (!update.message().text().isEmpty() && flagInput.flag() != Flag.None)// проверка на ввод пользователя
         {
             manualInputHandler.handler(update.message().from(), update.message());
         }

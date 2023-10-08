@@ -9,6 +9,7 @@ import pet.project.PetLand.entity.Command;
 import pet.project.PetLand.entity.Flag;
 import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.TelegramSenderService;
+import pet.project.PetLand.util.FlagInput;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,15 +22,16 @@ public class CommandHandler {
     private final CustomerService customerService;
     private final CallBackQueryHandler callBackQueryHandler;
     private final TelegramSenderService telegramSenderService;
-    private final ManualInputHandler manualInputHandler;
+    private final FlagInput flagInput;
     private final static Logger LOGGER = LoggerFactory.getLogger(CallBackQueryHandler.class);
 
 
-    public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService, ManualInputHandler manualInputHandler) {
+    public CommandHandler(CustomerService customerService, CallBackQueryHandler callBackQueryHandler, TelegramSenderService telegramSenderService, ManualInputHandler manualInputHandler, FlagInput flagInput) {
         this.customerService = customerService;
         this.callBackQueryHandler = callBackQueryHandler;
         this.telegramSenderService = telegramSenderService;
-        this.manualInputHandler = manualInputHandler;
+        this.flagInput = flagInput;
+
 
         commandExecute.put(Command.START, this::handleStart); // Добавление команд в хранилище (новые делать по примеру)
         commandExecute.put(Command.CANCEL, this::handleCancel);
@@ -63,8 +65,8 @@ public class CommandHandler {
 
     private void handleCancel(User user, Message message) {
         LOGGER.info("Was invoked method -> /cancel");
-        if (manualInputHandler.flag() != Flag.None) {
-            manualInputHandler.flagNone();
+        if (flagInput.flag() != Flag.None) {
+            flagInput.flagNone();
             callBackQueryHandler.startMenu(user.id());
         } else {
             telegramSenderService.send(user.id(), "В данный момент вы ничего не вводите");
