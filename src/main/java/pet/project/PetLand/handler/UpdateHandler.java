@@ -18,7 +18,7 @@ public class UpdateHandler {
     private final CallBackQueryHandler callBackQueryHandler;
     private final CommandHandler commandHandler;
     private final ReportService reportService;
-    private final CustomerService customerService;
+    private CustomerService customerService;
     private Messages update;
 
     /**
@@ -47,12 +47,16 @@ public class UpdateHandler {
         }
     }
     @Async
-    public void handleUserInputForForm(User user, Message message){
+    public void handleUserInputForForm(User user, Message message) {
         if (customerService.isFillingOutForm()) {
-            handleUserInputForForm(update.message().from(), update.message());
-        } else if (customerService.flagCustomer())
-                customerService.startFillingOutForm();
-                customerService.stopFillingOutForm();
-
+            customerService.startFillingOutForm();
+        } else if (customerService.flagCustomer()) {
+            customerService.stopFillingOutForm();
+        }
     }
+
+    public void FormHandlerService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
 }
