@@ -1,8 +1,8 @@
 package pet.project.PetLand.handler;
 
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
+import jdk.internal.joptsimple.internal.Messages;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,7 @@ public class UpdateHandler {
     private final CommandHandler commandHandler;
     private final ReportService reportService;
     private CustomerService customerService;
+    private Messages update;
 
     /**
      * Метод для обработки всех данных полученных от бота (<b> Главный метод иерархии обработчиков </b>)
