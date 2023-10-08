@@ -7,19 +7,28 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pet.project.PetLand.model.Customer;
+import pet.project.PetLand.model.Pet;
 import pet.project.PetLand.model.Report;
 import pet.project.PetLand.model.Volunteer;
+import pet.project.PetLand.service.CustomerService;
+import pet.project.PetLand.service.PetService;
 import pet.project.PetLand.service.VolunteerService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/volunteer")
 public class VolunteerController {
     private final VolunteerService volunteerService;
+    private final PetService petService;
+    private final CustomerService customerService;
 
-    public VolunteerController(VolunteerService volunteerService) {
+    public VolunteerController(VolunteerService volunteerService, PetService petService, CustomerService customerService) {
         this.volunteerService = volunteerService;
+        this.customerService = customerService;
+        this.petService = petService;
     }
     @Operation(
             tags = "Volunteer store",
@@ -80,6 +89,31 @@ public class VolunteerController {
     public ResponseEntity<Volunteer> createVolunteer(@RequestBody Volunteer volunteer){
         Volunteer createVolunteer = volunteerService.createVolunteer(volunteer);
         return ResponseEntity.ok(createVolunteer);
+    }
+    @Operation(
+            tags = "Volunteer store",
+            summary = "Привязать усыновителя к животному ",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Волонтеры",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class)
+                            )
+                    )
+            })
+
+    @PutMapping("{pet-id}/customer/{customer-id}")
+    public ResponseEntity<Pet> setCustomerForPet(@PathVariable(name = "pet-id") long petId, @PathVariable(name = "customer-id") long customerId) {
+        Customer customer = customerService.findById(customerId);
+        Pet pet = petService.read(petId);
+        pet.setCustomer(customer);
+        LocalDateTime decisionDate = LocalDateTime.now().plusDays(30);
+        pet.setDecisionDate(decisionDate);
+        petService.update(pet.getId(), pet);
+
+        return ResponseEntity.ok(pet);
     }
 
     @Operation(
