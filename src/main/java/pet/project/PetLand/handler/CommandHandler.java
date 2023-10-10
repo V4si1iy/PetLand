@@ -65,12 +65,14 @@ public class CommandHandler {
 
     private void handleCancel(User user, Message message) {
         LOGGER.info("Was invoked method -> /cancel");
-        if (flagInput.flag() != Flag.None) {
+        if (flagInput.flag() != Flag.None && flagInput.flag() != Flag.Customer) {
             flagInput.flagNone();
             callBackQueryHandler.startMenu(user.id());
-        } else {
+        } else if(flagInput.flag() == Flag.Customer) {
+            telegramSenderService.send(user.id(), "Ввод пользователя нельзя отменить");
+        }
+        else {
             telegramSenderService.send(user.id(), "В данный момент вы ничего не вводите");
-
         }
 
     }

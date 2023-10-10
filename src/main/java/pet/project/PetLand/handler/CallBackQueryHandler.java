@@ -89,14 +89,16 @@ public class CallBackQueryHandler {
 
     private void handleInformationShelter(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show information about shelter");
-        EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Название приюта: " + shelter.getName() + "\n" +
-                        "Адресс: " + shelter.getAddress() + "\n" +
-                        "Описание: " + shelter.getDescription() + "\n" +
-                        "Правила: " + shelter.getRules() + "\n" +
-                        "Как зайти в здание: " + shelter.getLocationMap());
-        telegramBot.execute(editMessage);
-        startMenu(user.id());
+        if(!Objects.isNull(shelter)) {
+            EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
+                    "Название приюта: " + shelter.getName() + "\n" +
+                            "Адресс: " + shelter.getAddress() + "\n" +
+                            "Описание: " + shelter.getDescription() + "\n" +
+                            "Правила: " + shelter.getRules() + "\n" +
+                            "Как зайти в здание: " + shelter.getLocationMap());
+            telegramBot.execute(editMessage);
+            startMenu(user.id());
+        }
     }
 
     private void handleRecommendations(User user, CallbackQuery callbackQuery) {

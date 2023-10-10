@@ -11,5 +11,5 @@ import java.util.List;
 public interface ReportPhotoRepository extends JpaRepository<ReportPhoto, Long> {
     ReportPhoto findFirstByReportId(Long id);
 
-    List<ReportPhoto> findAllByReport(Report report);
+    ReportPhoto findByReport(Report report);
 }

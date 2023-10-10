@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import java.util.Objects;
 
 // Таблица: Пользователь (Customer) в БД
@@ -13,7 +14,6 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // уникальный id
     private long chatId; // id Telegram чата
-    private long petId; // id взятого питомца
     private String surname; // фамилия
     private String name; // имя
     private String secondName; // отчество
@@ -29,9 +29,6 @@ public class Customer {
 
     public long getChatId() {
         return chatId;
-    }
-    public long getPetId() {
-        return petId;
     }
 
     public String getSurname() {
@@ -60,10 +57,6 @@ public class Customer {
 
     public void setChatId(long chatId) {
         this.chatId = chatId;
-    }
-
-    public void setPetId(long petId) {
-        this.petId = petId;
     }
 
     public void setSurname(String surname) {
@@ -97,19 +90,18 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return  id == customer.id &&
+        return id == customer.id &&
                 chatId == customer.chatId &&
-                petId == customer.petId &&
                 Objects.equals(surname, customer.surname) &&
-                        Objects.equals(name, customer.name)
-                        && Objects.equals(secondName, customer.secondName)
-                        && Objects.equals(phone, customer.phone)
-                        && Objects.equals(address, customer.address);
+                Objects.equals(name, customer.name)
+                && Objects.equals(secondName, customer.secondName)
+                && Objects.equals(phone, customer.phone)
+                && Objects.equals(address, customer.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chatId, petId, surname, name, secondName, phone, address);
+        return Objects.hash(id, chatId, surname, name, secondName, phone, address);
     }
 
 

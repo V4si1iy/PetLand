@@ -142,7 +142,7 @@ public class ReportController {
     public ResponseEntity<byte[]> previewPhotoById(@PathVariable Long id) {
         ReportPhoto reportPhoto = reportService.getPhotoById(id);
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(reportPhoto.getMediaType()));
+        headers.setContentType(MediaType.IMAGE_JPEG);
         headers.setContentLength(reportPhoto.getPhoto().length);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -165,8 +165,8 @@ public class ReportController {
             }
     )
     @GetMapping("{id}/photos")
-    public ResponseEntity<List<ReportPhoto>> getPhotosByReportId(@PathVariable Long id) {
-        return ResponseEntity.ok(reportService.getAllPhotoByReportId(id));
+    public ResponseEntity<byte[]> getPhotosByReportId(@PathVariable Long id) {
+       return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(reportService.getAllPhotoByReportId(id).getPhoto());
     }
 
 }
