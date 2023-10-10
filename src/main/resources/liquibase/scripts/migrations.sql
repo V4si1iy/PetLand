@@ -80,3 +80,7 @@ create table if not exists report
     photo      bytea,
     id_pet     bigint
 );
+
+-- changeset Vasiliy:1
+Drop TABLE info;
+Drop TABLE breed;

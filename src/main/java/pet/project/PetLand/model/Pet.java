@@ -10,20 +10,12 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // уникальный id
-    String breed; // порода питомца (many-to-one к табл Pets_care_recommendations)
+    String animal; // вид животного
     int age; // возраст (месяцев)
     String name; // имя питомца
     @ManyToOne
     @JoinColumn(name = "id_customer")
     private Customer customer;
-
-    // ------------------ фото -----------------
-    // Описание файла с фото питомца
-    private String filePath;
-    private long fileSize;
-    private String mediaType;
-    private byte[] photo; // фото
-    // ------------------ фото -----------------
 
     private LocalDateTime decisionDate; // дата принятия решения по усыновлению
     @ManyToOne
@@ -45,22 +37,6 @@ public class Pet {
     }
 
     // ----------------------------------------------
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
     public LocalDateTime getDecisionDate() {
         return decisionDate;
     }
@@ -81,24 +57,9 @@ public class Pet {
         return id;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
 
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public String getBreed() {
-        return breed;
+    public String getAnimal() {
+        return animal;
     }
 
     public int getAge() {
@@ -117,8 +78,8 @@ public class Pet {
         this.id = id;
     }
 
-    public void setBreed(String breed) {
-        this.breed = breed;
+    public void setAnimal(String animal) {
+        this.animal = animal;
     }
 
     public void setAge(int age) {
@@ -138,11 +99,11 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return age == pet.age && Objects.equals(breed, pet.breed) && Objects.equals(name, pet.name);
+        return age == pet.age && Objects.equals(animal, pet.animal) && Objects.equals(name, pet.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(breed, age, name);
+        return Objects.hash(animal, age, name);
     }
 }

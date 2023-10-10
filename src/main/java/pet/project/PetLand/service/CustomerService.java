@@ -83,14 +83,21 @@ public class CustomerService {
         }
     }
 
-    public void createCustomerStart(Chat chat, Message message) {
-        if (message.text() != null && !message.text().isEmpty()) {
-            Matcher matcher = patternCustomer.matcher(message.text());
-            if (matcher.matches()) {
-                String name = matcher.group(3);
-                String surname = matcher.group(7);
-                create(new Customer(chat.id(), surname, name));
-            }
+    public boolean createCustomerStart(Chat chat, Message message) {
+        if (message.text() == null || message.text().isEmpty()) {
+            telegramSenderService.send(chat.id(), "Неверный ввод, введите анкету снова");
+            return false;
+        }
+        Matcher matcher = patternCustomer.matcher(message.text());
+        if (matcher.matches()) {
+            String name = matcher.group(3);
+            String surname = matcher.group(7);
+            create(new Customer(chat.id(), surname, name));
+            return true;
+        } else {
+            telegramSenderService.send(chat.id(), "Неправильный ввод, введите анкету снова по шаблону");
+            return false;
         }
     }
 }
+

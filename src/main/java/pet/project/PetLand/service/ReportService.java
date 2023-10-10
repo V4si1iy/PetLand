@@ -127,14 +127,13 @@ public class ReportService {
                 ReportPhoto reportPhoto = new ReportPhoto(data);
                 Report report = new Report(reportStr, LocalDateTime.now(), pet);
                 reportPhoto.addReportToPhoto(report);
-                createReportPhoto(reportPhoto);
                 createReport(report);
+                createReportPhoto(reportPhoto);
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
                 telegramSenderService.send(message.chat().id(), "Неверное добавление фотки, введите отчет снова");
                 return false;
-            } finally {
-                return true;
             }
 
         } else {
@@ -160,15 +159,16 @@ public class ReportService {
         String[] parts = form.split("\n");
         if (parts.length == 5) {
             Pet pet = petService.findByName(parts[0]);
-
             if (!Objects.isNull(pet)) {
                 Report report = new Report(parts[1] + ". " + parts[2] + ". " + parts[3] + ".", LocalDateTime.now(), pet);
-                URL url = new URL(parts[4]);
-                BufferedInputStream in = new BufferedInputStream(url.openStream());
-                ReportPhoto reportPhoto = new ReportPhoto(in.readAllBytes());
-                reportPhoto.addReportToPhoto(report);
                 createReport(report);
-                createReportPhoto(reportPhoto);
+                // сделал добавление фотки, но реализация через костыли
+//                URL url = new URL(parts[4]);
+//                BufferedInputStream in = new BufferedInputStream(url.openStream());
+//                ReportPhoto reportPhoto = new ReportPhoto(in.readAllBytes());
+//                reportPhoto.addReportToPhoto(report);
+
+//                createReportPhoto(reportPhoto);
             }
 
         }

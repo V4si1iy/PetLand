@@ -49,7 +49,7 @@ public class ManualInputHandler {
         }
     }
 
-    private void reportHandler(User user, Message message){
+    private void reportHandler(User user, Message message) {
         LOGGER.info("Was invoked method to input Report by user");
         if (reportService.createReport(message)) {
             flagInput.flagNone();
@@ -59,9 +59,10 @@ public class ManualInputHandler {
 
     private void reportCustomerStart(User user, Message message) {
         LOGGER.info("Was invoked method to input Customer name and surname by user");
-        customerService.createCustomerStart(message.chat(), message);
-        flagInput.flagNone();
-        callBackQueryHandler.startMenu(user.id());
+        if (customerService.createCustomerStart(message.chat(), message)) {
+            flagInput.flagNone();
+            callBackQueryHandler.startMenu(user.id());
+        }
     }
 
 
