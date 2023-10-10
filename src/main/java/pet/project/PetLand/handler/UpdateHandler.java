@@ -30,10 +30,10 @@ public class UpdateHandler {
         if (!Objects.isNull(update.callbackQuery())) // Определяет нажата ли всплывающая кнопка
         {
             callBackQueryHandler.handler(update.callbackQuery());
-        } else if (!update.message().text().isEmpty() && update.message().text().startsWith("/")) // поиск команд через "/"
+        } else if (update.message().text() != null && update.message().text().startsWith("/")) // поиск команд через "/"
         {
             commandHandler.handler(update.message().from(), update.message());
-        } else if (!update.message().text().isEmpty() && flagInput.flag() != Flag.None)// проверка на ввод пользователя
+        } else if (flagInput.flag() != Flag.None)// проверка на ввод пользователя
         {
             manualInputHandler.handler(update.message().from(), update.message());
         }

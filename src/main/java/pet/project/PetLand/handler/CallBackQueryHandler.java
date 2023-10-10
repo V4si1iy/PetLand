@@ -90,7 +90,8 @@ public class CallBackQueryHandler {
     private void handleInformationShelter(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show information about shelter");
         EditMessageText editMessage = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(),
-                "Адресс: " + shelter.getAddress() + "\n" +
+                "Название приюта: " + shelter.getName() + "\n" +
+                        "Адресс: " + shelter.getAddress() + "\n" +
                         "Описание: " + shelter.getDescription() + "\n" +
                         "Правила: " + shelter.getRules() + "\n" +
                         "Как зайти в здание: " + shelter.getLocationMap());
@@ -114,19 +115,19 @@ public class CallBackQueryHandler {
 
     private void handleRecommendationDog(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show recommendation about dog");
-        executeRecommendationAnimal(user,callbackQuery,DOG_TRANSPORTATION,HOME_FOR_PUPPY,HOME_FOR_ADULT_DOG,HOME_FOR_RESTRICTED_DOG);
+        executeRecommendationAnimal(user, callbackQuery, DOG_TRANSPORTATION, HOME_FOR_PUPPY, HOME_FOR_ADULT_DOG, HOME_FOR_RESTRICTED_DOG);
         startMenu(user.id());
 
     }
 
     private void handleRecommendationCat(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show recommendation about cat");
-        executeRecommendationAnimal(user,callbackQuery,CAT_TRANSPORTATION,HOME_FOR_KITTY, HOME_FOR_ADULT_CAT,HOME_FOR_RESTRICTED_CAT);
+        executeRecommendationAnimal(user, callbackQuery, CAT_TRANSPORTATION, HOME_FOR_KITTY, HOME_FOR_ADULT_CAT, HOME_FOR_RESTRICTED_CAT);
         startMenu(user.id());
 
     }
-    private void executeRecommendationAnimal(User user,CallbackQuery callbackQuery, String text1 , String text2, String tex3,String text4)
-    {
+
+    private void executeRecommendationAnimal(User user, CallbackQuery callbackQuery, String text1, String text2, String tex3, String text4) {
         EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), text1);
         SendMessage message1 = new SendMessage(user.id(), text2);
         SendMessage message2 = new SendMessage(user.id(), tex3);
@@ -141,7 +142,7 @@ public class CallBackQueryHandler {
 
     private void handleHowTakePet(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to show information about how take pet");
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Здесь должна быть информация как взять питомца");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), CONTRACT_DOCUMENTS);
         telegramBot.execute(messageText);
         startMenu(user.id());
 
@@ -164,7 +165,7 @@ public class CallBackQueryHandler {
     private void handleReportTelegram(User user, CallbackQuery callbackQuery) {
         LOGGER.info("Was invoked method to get report by telegram bot");
         flagInput.flagReport();
-        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Напишите пожалуйста отчет по образцу: \n" + "Имя: <Имя животного> \n" + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n" + "Для отмены напишите /cancel");
+        EditMessageText messageText = new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), "Напишите пожалуйста отчет по образцу и добавте фото к сообщению: \n" + "Имя: <Имя животного> \n" + "Отчет: <отчет о животном(Рацион животного, общее самочувствие и привыкание к новому месту, изменение в поведении: отказ от старых привычек, приобретение новых> \n" + "Для отмены напишите /cancel");
         telegramBot.execute(messageText);
     }
 

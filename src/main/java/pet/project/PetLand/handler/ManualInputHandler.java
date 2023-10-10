@@ -10,6 +10,7 @@ import pet.project.PetLand.service.CustomerService;
 import pet.project.PetLand.service.ReportService;
 import pet.project.PetLand.util.FlagInput;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -48,7 +49,7 @@ public class ManualInputHandler {
         }
     }
 
-    private void reportHandler(User user, Message message) {
+    private void reportHandler(User user, Message message){
         LOGGER.info("Was invoked method to input Report by user");
         if (reportService.createReport(message)) {
             flagInput.flagNone();

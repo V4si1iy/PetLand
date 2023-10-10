@@ -25,13 +25,13 @@ public class InLineKeyboard {
                 new InlineKeyboardButton(CallBackData.REPORT.getName()).callbackData(CallBackData.REPORT.toString()),
                 new InlineKeyboardButton(CallBackData.RECOMMENDATIONS.getName()).callbackData(CallBackData.RECOMMENDATIONS.toString()),
                 new InlineKeyboardButton(CallBackData.VOLUNTEER.getName()).callbackData(CallBackData.VOLUNTEER.toString()),
-                new InlineKeyboardButton(CallBackData.SETTINGS.getName()).callbackData(CallBackData.SETTINGS.toString())
+//                new InlineKeyboardButton(CallBackData.SETTINGS.getName()).callbackData(CallBackData.SETTINGS.toString())
 
         };
         inlineKeyboardMarkup.addRow(buttons[0], buttons[1]);
         inlineKeyboardMarkup.addRow(buttons[2], buttons[3]);
         inlineKeyboardMarkup.addRow(buttons[4]);
-        inlineKeyboardMarkup.addRow(buttons[5]);
+//        inlineKeyboardMarkup.addRow(buttons[5]);
         return inlineKeyboardMarkup;
     }
 

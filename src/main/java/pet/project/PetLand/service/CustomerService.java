@@ -84,13 +84,13 @@ public class CustomerService {
     }
 
     public void createCustomerStart(Chat chat, Message message) {
-
-        Matcher matcher = patternCustomer.matcher(message.text());
-        if (matcher.matches()) {
-            String name = matcher.group(3);
-            String surname = matcher.group(7);
-            create(new Customer(chat.id(), surname, name));
+        if (message.text() != null && !message.text().isEmpty()) {
+            Matcher matcher = patternCustomer.matcher(message.text());
+            if (matcher.matches()) {
+                String name = matcher.group(3);
+                String surname = matcher.group(7);
+                create(new Customer(chat.id(), surname, name));
+            }
         }
-
     }
 }
