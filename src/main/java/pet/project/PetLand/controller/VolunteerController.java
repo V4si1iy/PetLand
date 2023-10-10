@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -158,5 +159,28 @@ public class VolunteerController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(volunteer);
+    }
+
+    @Operation(
+            tags = "Volunteer store",
+            summary = "Удалить питомца у усыновителя по ID",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Волонтеры",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Report[].class)
+                            )
+                    )
+            })
+    @DeleteMapping("{pet_id}/customer/{customer-id}")
+    public ResponseEntity<Pet> deletePetFromCustomer(@PathVariable(name = "pet_id") long petId, @PathVariable(name = "customer-id") long customerId) {
+        Customer customer = customerService.findById(customerId);
+        Pet pet = petService.delete(petId);
+        if (pet == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(pet);
     }
 }
